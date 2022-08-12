@@ -125,7 +125,7 @@ class SelectExecutableInputHandler(sublime_plugin.ListInputHandler):
   def next_input(self, args):
     return ArgsInputHandler() if self.args else None
 
-class ExecuteWithArgsCommand(sublime_plugin.WindowCommand):
+class ExecutorExecuteWithArgsCommand(sublime_plugin.WindowCommand):
   def run(self, select_executable, args):
     # print("RunWithArgs", select_executable, type(select_executable), args, type(args))
     global recents
@@ -143,9 +143,9 @@ class ExecuteWithArgsCommand(sublime_plugin.WindowCommand):
   def is_enabled(self):
     return proc == None
 
-class ExecuteCommand(sublime_plugin.WindowCommand):
+class ExecutorExecuteCommand(sublime_plugin.WindowCommand):
   def run(self, select_executable):
-    self.window.run_command("execute_with_args", {"select_executable": select_executable, "args": ""})
+    self.window.run_command("executor_execute_with_args", {"select_executable": select_executable, "args": ""})
 
   def input(self, args):
     return SelectExecutableInputHandler(self.window, False)
@@ -161,9 +161,9 @@ class SelectRecentInputHandler(sublime_plugin.ListInputHandler):
     global recents
     return [(cmd["name"], cmd) for cmd in recents]
 
-class RepeatRecentCommand(sublime_plugin.WindowCommand):
+class ExecutorRepeatRecentCommand(sublime_plugin.WindowCommand):
   def run(self, select_recent):
-    self.window.run_command("execute_with_args", {"select_executable": select_recent, "args": ""})
+    self.window.run_command("executor_execute_with_args", {"select_executable": select_recent, "args": ""})
 
   def input(self, args):
     return SelectRecentInputHandler()
@@ -172,16 +172,16 @@ class RepeatRecentCommand(sublime_plugin.WindowCommand):
     global proc, recents
     return proc == None and bool(recents)
 
-class RepeatLastCommand(sublime_plugin.WindowCommand):
+class ExecutorRepeatLastCommand(sublime_plugin.WindowCommand):
   def run(self):
     global recents
-    self.window.run_command("execute_with_args", {"select_executable": recents[0], "args": ""})
+    self.window.run_command("executor_execute_with_args", {"select_executable": recents[0], "args": ""})
 
   def is_enabled(self):
     global proc, recents
     return proc == None and len(recents) >= 1
 
-class CancelCommand(sublime_plugin.WindowCommand):
+class ExecutorCancelCommand(sublime_plugin.WindowCommand):
   def run(self):
     global proc
     if proc:

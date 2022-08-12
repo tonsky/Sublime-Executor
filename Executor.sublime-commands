@@ -1,22 +1,22 @@
 [
     {
         "caption": "Executor: Execute",
-        "command": "execute"
+        "command": "executor_execute"
     },
     {
         "caption": "Executor: Execute with Args",
-        "command": "execute_with_args"
+        "command": "executor_execute_with_args"
     },
     {
         "caption": "Executor: Repeat Recent",
-        "command": "repeat_recent"
+        "command": "executor_repeat_recent"
     },
     {
         "caption": "Executor: Repeat Last",
-        "command": "repeat_last"
+        "command": "executor_repeat_last"
     },
     {
         "caption": "Executor: Cancel",
-        "command": "cancel"
+        "command": "executor_cancel"
     },
 ]

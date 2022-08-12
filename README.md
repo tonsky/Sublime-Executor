@@ -10,11 +10,11 @@ Simple plugin that walks your current working directories, finds all files marke
 
 Gives you five basic commands:
 
-- Executor: Execute
-- Executor: Execute with Args
-- Executor: Repeat Recent
-- Executor: Repeat Last
-- Executor: Cancel
+- Executor: Execute (`executor_execute`)
+- Executor: Execute with Args (`executor_execute_with_args`)
+- Executor: Repeat Recent (`executor_repeat_recent`)
+- Executor: Repeat Last (`executor_repeat_last`)
+- Executor: Cancel (`executor_cancel`)
 
 Uses `output.exec` panel to stream both stdout and stderr.
 
