@@ -1,4 +1,6 @@
-# Run any executable from your working dir in Sublime Text
+# Executor
+
+Plugin that let you run any executable from your working dir inside Sublime Text.
 
 ![](./screenshots/commands.png)
 
@@ -17,6 +19,14 @@ Gives you five basic commands:
 Uses `output.exec` panel to stream both stdout and stderr.
 
 Knows about `.gitignore` enough to skip looking into ignored paths.
+
+## Installation
+
+Look for “Executor” in Package Control after this is published.
+
+Manually:
+
+- Clone this repo into `~/Library/Application Support/Sublime Text/Packages`
 
 ## Known limitations
 
