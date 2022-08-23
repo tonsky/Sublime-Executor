@@ -65,7 +65,12 @@ def execute(window, cmd):
   if output is None:
     # Try not to call get_output_panel until the regexes are assigned
     output = window.create_output_panel("exec")
-  output.settings().set("word_wrap", False)
+
+  settings = window.active_view().settings()
+  output.settings().set("result_file_regex", settings.get("executor_file_regex", ""))
+  output.settings().set("result_line_regex", settings.get("executor_line_regex", ""))
+  output.settings().set("result_base_dir", settings.get("executor_base_dir", ""))
+  output.settings().set("word_wrap", settings.get("executor_wrap", True))
   output.settings().set("line_numbers", False)
   output.settings().set("gutter", False)
   output.settings().set("scroll_past_end", False)

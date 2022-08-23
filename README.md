@@ -28,6 +28,27 @@ Manually:
 
 - Clone this repo into `~/Library/Application Support/Sublime Text/Packages`
 
+## Settings
+
+You can set
+
+```
+"executor_file_regex": "^File "([^"]+)" line (\d+) col (\d+)",
+"executor_base_dir": "<path>"
+```
+
+to make file names clickable in the output.
+
+Optionally, also set
+
+```
+"executor_line_regex": "^\s+line (\d+) col (\d+)",
+```
+
+if line number information is printed on the next line.
+
+These settings work both in global config and in projet file `"settings"`.
+
 ## Known limitations
 
 - Probably doesn’t work on Windows
