@@ -1,4 +1,4 @@
-import os, re, shutil, sublime, sublime_plugin, subprocess, threading, time
+import os, re, shutil, signal, sublime, sublime_plugin, subprocess, threading, time
 from typing import Any, Dict, Tuple
 
 def glob_to_re(s):
@@ -87,6 +87,7 @@ def execute(window, cmd):
                         stdin=subprocess.PIPE,
                         stdout=subprocess.PIPE,
                         stderr=subprocess.STDOUT,
+                        preexec_fn=os.setsid,
                         text=True) as p:
     proc = p
     try:
@@ -190,10 +191,8 @@ class ExecutorCancelCommand(sublime_plugin.WindowCommand):
   def run(self):
     global proc
     if proc:
-      # os.killpg(proc.pid, signal.SIGTERM)
-      # proc.terminate()
-      proc.kill()
-      proc.communicate()
+      os.killpg(proc.pid, signal.SIGTERM)
+      proc.terminate()
       proc = None
 
   def is_enabled(self):
