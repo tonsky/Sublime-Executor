@@ -1,6 +1,8 @@
 import os, re, shutil, signal, sublime, sublime_plugin, subprocess, threading, time
 from typing import Any, Dict, Tuple
 
+ns = 'sublime-executor'
+
 def glob_to_re(s):
   def replace_glob(match):
     s = match.group(0)
@@ -54,6 +56,23 @@ def find_executables(window):
       results.append({"name": e[len(head) + 1:], "cmd": "./" + os.path.basename(e), "cwd": os.path.dirname(e)})
   return results
 
+def refresh_status(view):
+  global status
+  if view:
+    if status:
+      view.set_status(ns, status)
+    else:
+      view.erase_status(ns)
+
+def set_status(s, view):
+  global status
+  status = s
+  refresh_status(view)
+
+class ExecutorEventListener(sublime_plugin.EventListener):
+    def on_activated_async(self, view):
+        refresh_status(view)
+
 def execute(window, cmd):
   def report(s, end = "\n"):
     global output
@@ -80,6 +99,7 @@ def execute(window, cmd):
   window.run_command("show_panel", {"panel": "output.exec"})
   
   report("[ RUN ] \"%s\" in %s" % (cmd["cmd"], cmd.get("cwd")))
+  set_status("▶️ " + cmd["name"], window.active_view())
   with subprocess.Popen(cmd["cmd"],
                         bufsize=1,
                         cwd=cmd.get("cwd"),
@@ -95,6 +115,8 @@ def execute(window, cmd):
         report(line, end="")
     except:
       pass
+
+  set_status(None, window.active_view())
 
   elapsed = time.perf_counter() - start
   if elapsed < 1:
@@ -199,10 +221,11 @@ class ExecutorCancelCommand(sublime_plugin.WindowCommand):
     return proc != None 
 
 def plugin_loaded():
-  global proc, recents, output
+  global proc, recents, output, status
   proc = None
   recents = []
   output = None
+  status = None
   # recents.append({"name": "skija/script/build.py --skia-dir ~/ws/skia-build/skia",
   #                 "cmd":  "./build.py --skia-dir ~/ws/skia-build/skia",
   #                 "cwd":  "/Users/tonsky/ws/skija/script"})
