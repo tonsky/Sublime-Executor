@@ -397,7 +397,7 @@ class ExecutorExecuteWithArgsCommand(sublime_plugin.WindowCommand, ProcessListen
             self.write('[Output Truncated]\n')
 
     def on_finished(self, _proc):
-        global proc
+        global proc, next_cmd
 
         if proc.killed:
             self.write("[ CANCEL ]\n")
@@ -416,6 +416,9 @@ class ExecutorExecuteWithArgsCommand(sublime_plugin.WindowCommand, ProcessListen
 
         set_status(None, self.window.active_view())
         proc = None
+        if cmd := next_cmd:
+          next_cmd = None
+          self.window.run_command(cmd)
 
     def update_annotations(self):
         stylesheet = '''
@@ -527,12 +530,16 @@ class ExecutorRepeatRecentCommand(sublime_plugin.WindowCommand):
 
 class ExecutorRepeatLastCommand(sublime_plugin.WindowCommand):
   def run(self):
-    global recents
-    self.window.run_command("executor_execute_with_args", {"select_executable": recents[0], "args": ""})
+    global proc, recents, next_cmd
+    if proc:
+      next_cmd = "executor_repeat_last"
+      proc.kill()
+    else:
+      self.window.run_command("executor_execute_with_args", {"select_executable": recents[0], "args": ""})
 
   def is_enabled(self):
     global proc, recents
-    return proc == None and len(recents) >= 1
+    return len(recents) >= 1
 
 class ExecutorCancelCommand(sublime_plugin.WindowCommand):
   def run(self):
@@ -544,10 +551,11 @@ class ExecutorCancelCommand(sublime_plugin.WindowCommand):
     return proc != None 
 
 def plugin_loaded():
-  global proc, recents, status
+  global proc, recents, status, next_cmd
   proc = None
   recents = []
   status = None
+  next_cmd = None
   # recents.append({"name": "skija/script/build.py --skia-dir ~/ws/skia-build/skia",
   #                 "cmd":  "./build.py --skia-dir ~/ws/skia-build/skia",
   #                 "cwd":  "/Users/tonsky/ws/skija/script"})
