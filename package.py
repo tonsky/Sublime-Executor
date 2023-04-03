@@ -224,6 +224,24 @@ class AsyncProcess:
                     self.listener.on_finished(self)
                 break
 
+class CommandInputHandler(sublime_plugin.TextInputHandler):
+  def placeholder(self):
+    return 'Shell command to run'
+
+class ExecutorExecuteShellCommand(sublime_plugin.WindowCommand):
+    def run(self, command, dir = None):
+        window = self.window
+        if dir:
+            dir = os.path.abspath(os.path.expandvars(os.path.expanduser(dir)))
+        else:
+            dir = window.folders()[0]
+        cmd = {"name": command,
+               "cmd": command,
+               "cwd": dir}
+        window.run_command("executor_execute_with_args", {"select_executable": cmd, "args": []})
+
+    def input(self, args):
+        return ShellInputHandler()
 
 class ExecutorExecuteWithArgsCommand(sublime_plugin.WindowCommand, ProcessListener):
     OUTPUT_LIMIT = 2 ** 27

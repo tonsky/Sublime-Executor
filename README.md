@@ -12,6 +12,7 @@ Gives you five basic commands:
 
 - Executor: Execute (`executor_execute`)
 - Executor: Execute with Args (`executor_execute_with_args`)
+- Executor: Execute Shell (`executor_execute_shell`)
 - Executor: Repeat Recent (`executor_repeat_recent`)
 - Executor: Repeat Last (`executor_repeat_last`)
 - Executor: Cancel (`executor_cancel`)
@@ -27,6 +28,18 @@ Look for “Executor” in Package Control after this is published.
 Manually:
 
 - Clone this repo into `~/Library/Application Support/Sublime Text/Packages`
+
+## Running arbitrary shell command
+
+Use `Executor: Execute Shell` command or add to your keybindings:
+
+```
+ {"keys":    ["ctrl+r"],
+  "command": "executor_execute_shell",
+  "args":    {"command": "clj -M -m user", "dir": "~/work/project"}},
+```
+
+`"dir"` is optional. If omitted, first open directory of current window is used.
 
 ## Settings
 

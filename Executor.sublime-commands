@@ -19,4 +19,8 @@
         "caption": "Executor: Cancel",
         "command": "executor_cancel"
     },
+    {
+        "caption": "Executor: Execute Shell Command",
+        "command": "executor_execute_shell"
+    },
 ]
