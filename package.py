@@ -241,7 +241,7 @@ class ExecutorExecuteShellCommand(sublime_plugin.WindowCommand):
         window.run_command("executor_execute_with_args", {"select_executable": cmd, "args": []})
 
     def input(self, args):
-        return ShellInputHandler()
+        return CommandInputHandler()
 
 class ExecutorExecuteWithArgsCommand(sublime_plugin.WindowCommand, ProcessListener):
     OUTPUT_LIMIT = 2 ** 27
