@@ -18,7 +18,11 @@ def glob_to_re(s):
     else:
       return "\\" + s
   pattern = re.sub(r"\*\*|[\*\?\.\(\)\[\]\{\}\$\^\+\|]", replace_glob, s)
-  return pattern
+  if pattern[0] != "/":
+    pattern = "(^|/)" + pattern
+  if pattern[-1] != "/":
+    pattern = pattern + "($|/)"
+  return re.compile(pattern)
 
 def find_executables_impl(acc, folder, ignores):
   local_ignores = ignores.copy()
@@ -38,7 +42,7 @@ def find_executables_impl(acc, folder, ignores):
           local_ignores.append(glob_to_re(line))
   for name in os.listdir(folder):
     path = os.path.join(folder, name)
-    matches = [p for p in local_ignores if re.search(p, path)]
+    matches = [p.pattern for p in local_ignores if re.search(p, path)]
     if matches:
       # print("Ignoring %s because of %s" % (path, matches))
       pass
@@ -54,7 +58,7 @@ def find_executables(window):
   for folder in window.folders():
     head, tail = os.path.split(folder)
     executables = []
-    find_executables_impl(executables, folder, ["\\.git"])
+    find_executables_impl(executables, folder, [re.compile("(^|/)\\.git($|/)")])
     for e in executables:
       results.append({"name": e[len(head) + 1:], "cmd": "./" + os.path.basename(e), "cwd": os.path.dirname(e)})
   return results
