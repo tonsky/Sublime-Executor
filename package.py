@@ -384,6 +384,7 @@ class ExecutorExecuteWithArgsCommand(sublime_plugin.WindowCommand, ProcessListen
         return proc is None
 
     def write(self, characters):
+        characters = re.sub(r"\x1b\[[^m]*m", "", characters)
         self.output_view.run_command(
             'append',
             {'characters': characters, 'force': True, 'scroll_to_end': True})
