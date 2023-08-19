@@ -63,6 +63,14 @@ def find_executables(window):
       results.append({"name": e[len(head) + 1:], "cmd": "./" + os.path.basename(e), "cwd": os.path.dirname(e)})
   return results
 
+def run_command(window, cmd, args):
+  global proc, next_cmd
+  if proc:
+    next_cmd = (cmd, args)
+    proc.kill()
+  else:
+    window.run_command(cmd, args)
+
 def refresh_status(view):
   global status
   if view:
@@ -77,13 +85,13 @@ def set_status(s, view):
   refresh_status(view)
 
 class ExecutorEventListener(sublime_plugin.EventListener):
-    def on_activated_async(self, view):
-        refresh_status(view)
+  def on_activated_async(self, view):
+    refresh_status(view)
 
-    def on_exit(self):
-        global proc
-        if proc:
-            proc.kill()
+  def on_exit(self):
+    global proc
+    if proc:
+      proc.kill()
 
 class ArgsInputHandler(sublime_plugin.TextInputHandler):
   def placeholder(self):
@@ -128,6 +136,7 @@ class AsyncProcess:
         if shell_cmd and not isinstance(shell_cmd, str):
             raise ValueError("shell_cmd must be a string")
 
+        self.shell_cmd = shell_cmd
         self.listener = listener
         self.killed = False
 
@@ -199,6 +208,7 @@ class AsyncProcess:
 
     def kill(self):
         if not self.killed:
+            print("[ Executor ] Killing " + self.shell_cmd)
             self.killed = True
             if sys.platform == "win32":
                 # terminate would not kill process opened by the shell cmd.exe,
@@ -247,12 +257,12 @@ class ExecutorExecuteShellCommand(sublime_plugin.WindowCommand):
         cmd = {"name": command,
                "cmd": command,
                "cwd": dir}
-        window.run_command("executor_execute_with_args", {"select_executable": cmd, "args": []})
+        run_command(window, "executor_impl", {"select_executable": cmd, "args": []})
 
     def input(self, args):
         return CommandInputHandler()
 
-class ExecutorExecuteWithArgsCommand(sublime_plugin.WindowCommand, ProcessListener):
+class ExecutorImplCommand(sublime_plugin.WindowCommand, ProcessListener):
     OUTPUT_LIMIT = 2 ** 27
 
     def __init__(self, window):
@@ -271,7 +281,6 @@ class ExecutorExecuteWithArgsCommand(sublime_plugin.WindowCommand, ProcessListen
             encoding="utf-8",
             env={},
             quiet=False,
-            kill=False,
             kill_previous=False,
             update_annotations_only=False,
             word_wrap=True,
@@ -285,17 +294,13 @@ class ExecutorExecuteWithArgsCommand(sublime_plugin.WindowCommand, ProcessListen
             return
 
         global proc
-        if kill:
-            if proc:
-                proc.kill()
-            return
-
-        if kill_previous and proc and proc.poll():
+        if kill_previous and proc:
             proc.kill()
 
         global recents
         name = select_executable["name"] + (" " + args if args else "")
         shell_cmd = select_executable["cmd"] + (" " + args if args else "")
+        self.shell_cmd = shell_cmd
         working_dir = select_executable.get("cwd")
         cmd = {"name": name,
                "cmd": shell_cmd,
@@ -334,12 +339,12 @@ class ExecutorExecuteWithArgsCommand(sublime_plugin.WindowCommand, ProcessListen
         proc = None
         if not self.quiet:
             if shell_cmd:
-                print("Running " + shell_cmd)
+                print("[ Executor ] Running " + shell_cmd)
             elif cmd:
                 cmd_string = cmd
                 if not isinstance(cmd, str):
                     cmd_string = " ".join(cmd)
-                print("Running " + cmd_string)
+                print("[ Executor ] Running " + cmd_string)
             sublime.status_message("Building")
 
         preferences_settings = \
@@ -381,13 +386,6 @@ class ExecutorExecuteWithArgsCommand(sublime_plugin.WindowCommand, ProcessListen
                 self.write("[ EXCEPTION ]\n")
             set_status(None, window.active_view())
 
-    def input(self, args):
-      return SelectExecutableInputHandler(self.window, True)
-
-    def is_enabled(self, kill=False, **kwargs):
-        global proc
-        return proc is None
-
     def write(self, characters):
         characters = re.sub(r"\x1b\[[^m]*m", "", characters)
         self.output_view.run_command(
@@ -426,7 +424,7 @@ class ExecutorExecuteWithArgsCommand(sublime_plugin.WindowCommand, ProcessListen
 
     def on_finished(self, _proc):
         global proc, next_cmd
-
+        print("[ Executor ] Finished " + proc.shell_cmd)
         if proc.killed:
             self.write("[ CANCEL ]\n")
         elif not self.quiet:
@@ -441,12 +439,14 @@ class ExecutorExecuteWithArgsCommand(sublime_plugin.WindowCommand, ProcessListen
                 self.write("[ DONE ] in %s\n" % elapsed_str)
             else:
                 self.write("[ FAIL ] with code %d in %s\n" % (exit_code, elapsed_str))
+        
 
         set_status(None, self.window.active_view())
         proc = None
         if cmd := next_cmd:
+          (cmd, args) = cmd
           next_cmd = None
-          self.window.run_command(cmd)
+          self.window.run_command(cmd, args)
 
     def update_annotations(self):
         stylesheet = '''
@@ -527,15 +527,19 @@ class ExecutorExecuteWithArgsCommand(sublime_plugin.WindowCommand, ProcessListen
         self.annotation_sets_by_buffer = {}
         self.show_errors_inline = False
 
+class ExecutorExecuteWithArgsCommand(sublime_plugin.WindowCommand):
+  def run(self, select_executable, args):
+    run_command(self.window, "executor_impl", {"select_executable": select_executable, "args": args})
+
+  def input(self, args):
+      return SelectExecutableInputHandler(self.window, True)
+
 class ExecutorExecuteCommand(sublime_plugin.WindowCommand):
   def run(self, select_executable):
-    self.window.run_command("executor_execute_with_args", {"select_executable": select_executable, "args": ""})
+    run_command(self.window, "executor_impl", {"select_executable": select_executable, "args": ""})
 
   def input(self, args):
     return SelectExecutableInputHandler(self.window, False)
-
-  def is_enabled(self):
-    return proc == None
 
 class SelectRecentInputHandler(sublime_plugin.ListInputHandler):
   def placeholder(self):
@@ -547,26 +551,22 @@ class SelectRecentInputHandler(sublime_plugin.ListInputHandler):
 
 class ExecutorRepeatRecentCommand(sublime_plugin.WindowCommand):
   def run(self, select_recent):
-    self.window.run_command("executor_execute_with_args", {"select_executable": select_recent, "args": ""})
+    run_command(self.window, "executor_impl", {"select_executable": select_recent, "args": ""})
 
   def input(self, args):
     return SelectRecentInputHandler()
 
   def is_enabled(self):
-    global proc, recents
-    return proc == None and bool(recents)
+    global recents
+    return bool(recents)
 
 class ExecutorRepeatLastCommand(sublime_plugin.WindowCommand):
   def run(self):
     global proc, recents, next_cmd
-    if proc:
-      next_cmd = "executor_repeat_last"
-      proc.kill()
-    else:
-      self.window.run_command("executor_execute_with_args", {"select_executable": recents[0], "args": ""})
+    run_command(self.window, "executor_impl", {"select_executable": recents[0], "args": ""})
 
   def is_enabled(self):
-    global proc, recents
+    global recents
     return len(recents) >= 1
 
 class ExecutorCancelCommand(sublime_plugin.WindowCommand):

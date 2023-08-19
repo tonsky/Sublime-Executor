@@ -8,7 +8,7 @@ Plugin that let you run any executable from your working dir inside Sublime Text
 
 Simple plugin that walks your current working directories, finds all files marked as executable and let you run them inside Sublime Text.
 
-Gives you five basic commands:
+Gives you these basic commands:
 
 - Executor: Execute (`executor_execute`)
 - Executor: Execute with Args (`executor_execute_with_args`)
@@ -20,6 +20,8 @@ Gives you five basic commands:
 Uses `output.exec` panel to stream both stdout and stderr.
 
 Knows about `.gitignore` enough to skip looking into ignored paths.
+
+Only one command can be run at the same time. Running second one will kill previous one.
 
 ## Installation
 
