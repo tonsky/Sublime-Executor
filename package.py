@@ -80,6 +80,11 @@ class ExecutorEventListener(sublime_plugin.EventListener):
     def on_activated_async(self, view):
         refresh_status(view)
 
+    def on_exit(self):
+        global proc
+        if proc:
+            proc.kill()
+
 class ArgsInputHandler(sublime_plugin.TextInputHandler):
   def placeholder(self):
     return 'Additional arguments'
