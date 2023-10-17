@@ -25,33 +25,34 @@ def glob_to_re(s):
   return re.compile(pattern)
 
 def find_executables_impl(acc, folder, ignores):
-  local_ignores = ignores.copy()
-  gitignore = os.path.join(folder, ".gitignore")
-  if os.path.exists(gitignore):
-    with open(gitignore, 'rt') as f:
-      # https://git-scm.com/docs/gitignore
-      for line in f.readlines():
-        line = line.strip()
-        if not line:
-          pass
-        elif line.startswith("#"):
-          pass
-        elif line.startswith("!"):
-          pass # TODO negates the pattern; any matching file excluded by a previous pattern will become included again
-        else:
-          local_ignores.append(glob_to_re(line))
-  for name in os.listdir(folder):
-    path = os.path.join(folder, name)
-    matches = [p.pattern for p in local_ignores if re.search(p, path)]
-    if matches:
-      # print("Ignoring %s because of %s" % (path, matches))
-      pass
-    elif os.path.isfile(path):
-      if os.access(path, os.X_OK):
-        acc.append(path)
-        # print(path)
-    elif os.path.isdir(path):
-      find_executables_impl(acc, path, local_ignores)
+  if os.path.exists(folder):
+    local_ignores = ignores.copy()
+    gitignore = os.path.join(folder, ".gitignore")
+    if os.path.exists(gitignore):
+      with open(gitignore, 'rt') as f:
+        # https://git-scm.com/docs/gitignore
+        for line in f.readlines():
+          line = line.strip()
+          if not line:
+            pass
+          elif line.startswith("#"):
+            pass
+          elif line.startswith("!"):
+            pass # TODO negates the pattern; any matching file excluded by a previous pattern will become included again
+          else:
+            local_ignores.append(glob_to_re(line))
+    for name in os.listdir(folder):
+      path = os.path.join(folder, name)
+      matches = [p.pattern for p in local_ignores if re.search(p, path)]
+      if matches:
+        # print("Ignoring %s because of %s" % (path, matches))
+        pass
+      elif os.path.isfile(path):
+        if os.access(path, os.X_OK):
+          acc.append(path)
+          # print(path)
+      elif os.path.isdir(path):
+        find_executables_impl(acc, path, local_ignores)
 
 def find_executables(window):
   results = []
