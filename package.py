@@ -1,10 +1,27 @@
 # Based on Default/exec.py
 
-import codecs, os, re, shutil, signal, subprocess, sys, threading, time
+import codecs, collections, os, re, shutil, signal, subprocess, sys, threading, time
 import sublime, sublime_plugin
 from typing import Any, Dict, Tuple
 
 ns = 'sublime-executor'
+
+class State:
+  def __init__(self):
+    self.proc = None
+    self.status = None
+    self.next_cmd = None
+    self.recents = []
+    
+  def __str__(self):
+    return 'State(proc: {0}, status: {1}, next_cmd: {2}, recents: {3})'.format(self.proc, self.status, self.next_cmd, self.recents)
+
+states = collections.defaultdict(lambda: State())
+
+def get_state(window = None):
+  if window is None:
+    window = sublime.active_window()
+  return states[window.id()]
 
 def glob_to_re(s):
   def replace_glob(match):
@@ -65,34 +82,36 @@ def find_executables(window):
   return results
 
 def run_command(window, cmd, args):
-  global proc, next_cmd
-  if proc:
-    next_cmd = (cmd, args)
-    proc.kill()
+  state = get_state(window)
+  if state.proc:
+    state.next_cmd = (cmd, args)
+    state.proc.kill()
   else:
     window.run_command(cmd, args)
 
 def refresh_status(view):
-  global status
   if view:
-    if status:
-      view.set_status(ns, status)
+    state = get_state(view.window())
+    if state.status:
+      view.set_status(ns, state.status)
     else:
       view.erase_status(ns)
 
 def set_status(s, view):
-  global status
-  status = s
+  state = get_state(view.window())
+  state.status = s
   refresh_status(view)
 
 class ExecutorEventListener(sublime_plugin.EventListener):
   def on_activated_async(self, view):
     refresh_status(view)
 
-  def on_exit(self):
-    global proc
-    if proc:
-      proc.kill()
+  def on_pre_close_window(self, window):
+    state = get_state(window)
+    if state.proc:
+      state.proc.kill()
+    else:
+      del states[window.id()]
 
 class ArgsInputHandler(sublime_plugin.TextInputHandler):
   def placeholder(self):
@@ -294,11 +313,11 @@ class ExecutorImplCommand(sublime_plugin.WindowCommand, ProcessListener):
                 self.update_annotations()
             return
 
-        global proc
-        if kill_previous and proc:
-            proc.kill()
+        state = get_state(self.window)
 
-        global recents
+        if kill_previous and state.proc:
+            state.proc.kill()
+
         name = select_executable["name"] + (" " + args if args else "")
         shell_cmd = select_executable["cmd"] + (" " + args if args else "")
         self.shell_cmd = shell_cmd
@@ -306,9 +325,9 @@ class ExecutorImplCommand(sublime_plugin.WindowCommand, ProcessListener):
         cmd = {"name": name,
                "cmd": shell_cmd,
                "cwd": working_dir}
-        if cmd in recents:
-          recents.remove(cmd)
-        recents.insert(0, cmd)
+        if cmd in state.recents:
+          state.recents.remove(cmd)
+        state.recents.insert(0, cmd)
 
         if self.output_view is None:
             # Try not to call get_output_panel until the regexes are assigned
@@ -337,7 +356,7 @@ class ExecutorImplCommand(sublime_plugin.WindowCommand, ProcessListener):
         self.encoding = encoding
         self.quiet = quiet
 
-        proc = None
+        state.proc = None
         if not self.quiet:
             if shell_cmd:
                 print("[ Executor ] Running " + shell_cmd)
@@ -378,8 +397,8 @@ class ExecutorImplCommand(sublime_plugin.WindowCommand, ProcessListener):
 
         try:
             # Forward kwargs to AsyncProcess
-            proc = AsyncProcess(cmd, shell_cmd, merged_env, self, **kwargs)
-            proc.start()
+            state.proc = AsyncProcess(cmd, shell_cmd, merged_env, self, **kwargs)
+            state.proc.start()
 
         except Exception as e:
             self.write(str(e) + "\n")
@@ -424,30 +443,33 @@ class ExecutorImplCommand(sublime_plugin.WindowCommand, ProcessListener):
             self.write('[Output Truncated]\n')
 
     def on_finished(self, _proc):
-        global proc, next_cmd
-        print("[ Executor ] Finished " + proc.shell_cmd)
-        if proc.killed:
+        state = get_state(self.window)
+
+        print("[ Executor ] Finished " + state.proc.shell_cmd)
+        if state.proc.killed:
             self.write("[ CANCEL ]\n")
         elif not self.quiet:
-            elapsed = time.time() - proc.start_time
+            elapsed = time.time() - state.proc.start_time
             if elapsed < 1:
                 elapsed_str = "%.0fms" % (elapsed * 1000)
             else:
                 elapsed_str = "%.1fs" % (elapsed)
 
-            exit_code = proc.exit_code()
+            exit_code = state.proc.exit_code()
             if exit_code == 0 or exit_code is None:
                 self.write("[ DONE ] in %s\n" % elapsed_str)
             else:
                 self.write("[ FAIL ] with code %d in %s\n" % (exit_code, elapsed_str))
-        
 
         set_status(None, self.window.active_view())
-        proc = None
-        if cmd := next_cmd:
+        state.proc = None
+        if cmd := state.next_cmd:
           (cmd, args) = cmd
-          next_cmd = None
+          state.next_cmd = None
           self.window.run_command(cmd, args)
+
+        if not self.window.is_valid():
+          del states[self.window.id()]
 
     def update_annotations(self):
         stylesheet = '''
@@ -547,8 +569,8 @@ class SelectRecentInputHandler(sublime_plugin.ListInputHandler):
     return 'Select executable to run'
 
   def list_items(self):
-    global recents
-    return [(cmd["name"], cmd) for cmd in recents]
+    state = get_state()
+    return [(cmd["name"], cmd) for cmd in state.recents]
 
 class ExecutorRepeatRecentCommand(sublime_plugin.WindowCommand):
   def run(self, select_recent):
@@ -558,44 +580,29 @@ class ExecutorRepeatRecentCommand(sublime_plugin.WindowCommand):
     return SelectRecentInputHandler()
 
   def is_enabled(self):
-    global recents
-    return bool(recents)
+    state = get_state()
+    return bool(state.recents)
 
 class ExecutorRepeatLastCommand(sublime_plugin.WindowCommand):
   def run(self):
-    global proc, recents, next_cmd
-    run_command(self.window, "executor_impl", {"select_executable": recents[0], "args": ""})
+    state = get_state(self.window)
+    run_command(self.window, "executor_impl", {"select_executable": state.recents[0], "args": ""})
 
   def is_enabled(self):
-    global recents
-    return len(recents) >= 1
+    state = get_state(self.window)
+    return len(state.recents) >= 1
 
 class ExecutorCancelCommand(sublime_plugin.WindowCommand):
   def run(self):
-    global proc
-    if proc:
-      proc.kill()
+    state = get_state(self.window)
+    if state.proc:
+      state.proc.kill()
 
   def is_enabled(self):
-    return proc != None 
-
-def plugin_loaded():
-  global proc, recents, status, next_cmd
-  proc = None
-  recents = []
-  status = None
-  next_cmd = None
-  # recents.append({"name": "skija/script/build.py --skia-dir ~/ws/skia-build/skia",
-  #                 "cmd":  "./build.py --skia-dir ~/ws/skia-build/skia",
-  #                 "cwd":  "/Users/tonsky/ws/skija/script"})
-  # recents.append({"name": "skija/script/clean.py",
-  #                 "cmd":  "./clean.py",
-  #                 "cwd":  "/Users/tonsky/ws/skija/script"})
-  # recents.append({"name": "skija/script/build.py",
-  #                 "cmd":  "./build.py",
-  #                 "cwd":  "/Users/tonsky/ws/skija/script"})
+    state = get_state(self.window)
+    return state.proc != None 
 
 def plugin_unloaded():
-  global proc
-  if proc:
-    proc.kill()
+  for state in states.values():
+    if state.proc:
+      state.proc.kill()
