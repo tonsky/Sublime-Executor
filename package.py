@@ -12,9 +12,6 @@ class State:
     self.status = None
     self.next_cmd = None
     self.recents = []
-    
-  def __str__(self):
-    return 'State(proc: {0}, status: {1}, next_cmd: {2}, recents: {3})'.format(self.proc, self.status, self.next_cmd, self.recents)
 
 states = collections.defaultdict(lambda: State())
 
@@ -98,9 +95,10 @@ def refresh_status(view):
       view.erase_status(ns)
 
 def set_status(s, view):
-  state = get_state(view.window())
-  state.status = s
-  refresh_status(view)
+  if view:
+    state = get_state(view.window())
+    state.status = s
+    refresh_status(view)
 
 class ExecutorEventListener(sublime_plugin.EventListener):
   def on_activated_async(self, view):
@@ -442,34 +440,33 @@ class ExecutorImplCommand(sublime_plugin.WindowCommand, ProcessListener):
         if self.output_size >= self.OUTPUT_LIMIT:
             self.write('[Output Truncated]\n')
 
-    def on_finished(self, _proc):
-        state = get_state(self.window)
-
-        print("[ Executor ] Finished " + state.proc.shell_cmd)
-        if state.proc.killed:
+    def on_finished(self, proc):
+        print("[ Executor ] Finished " + proc.shell_cmd)
+        if proc.killed:
             self.write("[ CANCEL ]\n")
         elif not self.quiet:
-            elapsed = time.time() - state.proc.start_time
+            elapsed = time.time() - proc.start_time
             if elapsed < 1:
                 elapsed_str = "%.0fms" % (elapsed * 1000)
             else:
                 elapsed_str = "%.1fs" % (elapsed)
 
-            exit_code = state.proc.exit_code()
+            exit_code = proc.exit_code()
             if exit_code == 0 or exit_code is None:
                 self.write("[ DONE ] in %s\n" % elapsed_str)
             else:
                 self.write("[ FAIL ] with code %d in %s\n" % (exit_code, elapsed_str))
 
-        set_status(None, self.window.active_view())
-        state.proc = None
-        if cmd := state.next_cmd:
-          (cmd, args) = cmd
-          state.next_cmd = None
-          self.window.run_command(cmd, args)
-
         if not self.window.is_valid():
           del states[self.window.id()]
+        else:
+          set_status(None, self.window.active_view())
+          state = get_state(self.window)
+          state.proc = None
+          if cmd := state.next_cmd:
+            (cmd, args) = cmd
+            state.next_cmd = None
+            self.window.run_command(cmd, args)
 
     def update_annotations(self):
         stylesheet = '''
