@@ -23,4 +23,8 @@
         "caption": "Executor: Execute Shell Command",
         "command": "executor_execute_shell"
     },
+    {
+        "caption": "Executor: Clear Output",
+        "command": "executor_clear_output"
+    }
 ]

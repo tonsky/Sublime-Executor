@@ -602,6 +602,18 @@ class ExecutorCancelCommand(sublime_plugin.WindowCommand):
     state = get_state(self.window)
     return state.proc != None 
 
+class ExecutorClearOutputImplCommand(sublime_plugin.TextCommand):
+  def run(self, edit):
+    self.view.erase(edit, sublime.Region(0, self.view.size()))
+
+class ExecutorClearOutputCommand(sublime_plugin.WindowCommand):
+  def run(self, panel = 'exec'):
+     if view := self.window.find_output_panel(panel):
+        view.run_command("executor_clear_output_impl")
+  
+  def is_enabled(self):
+    return bool(self.window.find_output_panel("exec"))
+
 def plugin_unloaded():
   for state in states.values():
     if state.proc:

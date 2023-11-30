@@ -16,16 +16,17 @@ Gives you these basic commands:
 - Executor: Repeat Recent (`executor_repeat_recent`)
 - Executor: Repeat Last (`executor_repeat_last`)
 - Executor: Cancel (`executor_cancel`)
+- Executor: Clear Output (`executor_clear_output`)
 
 Uses `output.exec` panel to stream both stdout and stderr.
 
 Knows about `.gitignore` enough to skip looking into ignored paths.
 
-Only one command can be run at the same time. Running second one will kill previous one.
+Only one command can be run at the same time per window. Running second one will kill previous one.
 
 ## Installation
 
-Look for “Executor” in Package Control after this is published.
+Look for “Executor” in Package Control.
 
 Manually:
 
