@@ -17,8 +17,9 @@ Gives you these basic commands:
 - Executor: Repeat Last (`executor_repeat_last`)
 - Executor: Cancel (`executor_cancel`)
 - Executor: Clear Output (`executor_clear_output`)
+- Executor: Toggle Bottom Group (`executor_toggle_bottom_group`)
 
-Uses `output.exec` panel to stream both stdout and stderr.
+Uses either `output.exec` panel or a view to stream both stdout and stderr.
 
 Knows about `.gitignore` enough to skip looking into ignored paths.
 
@@ -44,7 +45,41 @@ Use `Executor: Execute Shell` command or add to your keybindings:
 
 `"dir"` is optional. If omitted, first open directory of current window is used.
 
-## Settings
+## Outputting to view
+
+Sometimes it’s desirable to redirect output to a real view which can be dragged to its own group or separated. Gives you more options for layout. For that, set
+
+```
+"executor_output_view": true
+```
+
+to open a scratch view for output instead of a panel (can be dragged etc).
+
+Set
+
+```
+"executor_reuse_output_view": false
+```
+
+to create new view each time you execute a command (by default old view is reused).
+
+Lastly, Executor has a command to quickly open/close a new group at the bottom of the window:
+
+```
+executor_toggle_bottom_group
+```
+
+When called without arguments, it will toggle the bottom group visibility. If passed `{"visible": true | false}`, it will act as open or close command.
+
+You can change bottom group size by specifying
+
+```
+"executor_bottom_group_ratio": 0.25,
+```
+
+Output views are always opened in the last group of the window, so if you have one at the bottom, it’ll use it.
+
+## Highlighting settings
 
 You can set
 
@@ -63,7 +98,13 @@ Optionally, also set
 
 if line number information is printed on the next line.
 
-These settings work both in global config and in projet file `"settings"`.
+You can also control wrapping:
+
+```
+"executor_word_wrap": true | false
+```
+
+These settings work both in global config and in project file `"settings"`.
 
 ## Known limitations
 

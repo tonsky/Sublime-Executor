@@ -26,5 +26,9 @@
     {
         "caption": "Executor: Clear Output",
         "command": "executor_clear_output"
-    }
+    },
+    {
+        "caption": "Executor: Toggle Bottom Group",
+        "command": "executor_toggle_bottom_group"
+    },
 ]

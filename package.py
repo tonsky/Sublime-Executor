@@ -12,6 +12,7 @@ class State:
     self.status = None
     self.next_cmd = None
     self.recents = []
+    self.output_view = None
 
 states = collections.defaultdict(lambda: State())
 
@@ -285,11 +286,56 @@ class ExecutorImplCommand(sublime_plugin.WindowCommand, ProcessListener):
 
     def __init__(self, window):
         super().__init__(window)
-
         self.errs_by_file = {}
         self.annotation_sets_by_buffer = {}
         self.show_errors_inline = True
-        self.output_view = None
+
+    def settings(self):
+        return sublime.load_settings("Preferences.sublime-settings")
+
+    def use_output_view(self):
+        settings = self.settings()
+        return settings.get("executor_output_view", False)
+
+    def get_output_view(self):
+        window = self.window
+        state = get_state(window)
+        output_view = state.output_view
+        use_output_view = self.use_output_view()
+        if output_view is None or not output_view.is_valid() or ((output_view.element() is None) != use_output_view):
+            if use_output_view:
+                active_group = window.active_group()
+                active_view = window.active_view()
+                output_view = window.new_file()
+                output_view.set_scratch(True)
+                group = window.num_groups() - 1
+                index = len(window.views_in_group(group))
+                window.set_view_index(output_view, group, index)
+                self.init_output_view(output_view)
+                window.focus_group(active_group)
+                window.focus_view(active_view)
+            else:
+                output_view = window.find_output_panel('exec') or window.create_output_panel('exec')
+            state.output_view = output_view
+        return output_view
+
+    def init_output_view(self, view):
+        state = get_state(self.window)
+        settings = view.settings()
+        settings.set("result_file_regex", self.file_regex)
+        settings.set("result_line_regex", self.line_regex)
+        settings.set("result_base_dir", self.working_dir)
+        settings.set("word_wrap", self.word_wrap)
+        settings.set("line_numbers", False)
+        settings.set("gutter", False)
+        settings.set("scroll_past_end", False)
+        view.assign_syntax(self.syntax)
+        if self.use_output_view():
+            view.set_name("▶️ [ RUN ] " + self.name)
+        else:
+            # Call create_output_panel a second time after assigning the above
+            # settings, so that it'll be picked up as a result buffer
+            self.window.create_output_panel("exec")
 
     def run(self,
             select_executable,
@@ -301,7 +347,7 @@ class ExecutorImplCommand(sublime_plugin.WindowCommand, ProcessListener):
             quiet=False,
             kill_previous=False,
             update_annotations_only=False,
-            word_wrap=True,
+            word_wrap=None,
             syntax="Packages/Text/Plain text.tmLanguage",
             # Catches "path" and "shell"
             **kwargs):
@@ -317,6 +363,7 @@ class ExecutorImplCommand(sublime_plugin.WindowCommand, ProcessListener):
             state.proc.kill()
 
         name = select_executable["name"] + (" " + args if args else "")
+        self.name = name
         shell_cmd = select_executable["cmd"] + (" " + args if args else "")
         self.shell_cmd = shell_cmd
         working_dir = select_executable.get("cwd")
@@ -327,9 +374,15 @@ class ExecutorImplCommand(sublime_plugin.WindowCommand, ProcessListener):
           state.recents.remove(cmd)
         state.recents.insert(0, cmd)
 
-        if self.output_view is None:
-            # Try not to call get_output_panel until the regexes are assigned
-            self.output_view = self.window.create_output_panel("exec")
+        settings = self.window.active_view().settings()
+        show_panel_on_build = settings.get("show_panel_on_build", True)
+        reuse_output_view = settings.get("executor_reuse_output_view", True)
+
+        self.file_regex = file_regex or settings.get("executor_file_regex", "")
+        self.line_regex = line_regex or settings.get("executor_line_regex", "")
+        self.working_dir = settings.get("executor_base_dir", working_dir)
+        self.word_wrap = word_wrap if word_wrap is not None else settings.get("executor_word_wrap", True)
+        self.syntax = syntax
 
         # Default the to the current files directory if no working directory
         # was given
@@ -338,18 +391,13 @@ class ExecutorImplCommand(sublime_plugin.WindowCommand, ProcessListener):
                 self.window.active_view().file_name()):
             working_dir = os.path.dirname(self.window.active_view().file_name())
 
-        self.output_view.settings().set("result_file_regex", file_regex)
-        self.output_view.settings().set("result_line_regex", line_regex)
-        self.output_view.settings().set("result_base_dir", working_dir)
-        self.output_view.settings().set("word_wrap", word_wrap)
-        self.output_view.settings().set("line_numbers", False)
-        self.output_view.settings().set("gutter", False)
-        self.output_view.settings().set("scroll_past_end", False)
-        self.output_view.assign_syntax(syntax)
-
-        # Call create_output_panel a second time after assigning the above
-        # settings, so that it'll be picked up as a result buffer
-        self.window.create_output_panel("exec")
+        
+        # Try not to call get_output_panel until the regexes are assigned
+        if not reuse_output_view:
+            state.output_view = None
+        state.output_view = self.get_output_view()
+        state.output_view.run_command("executor_clear_output_impl")
+        self.init_output_view(state.output_view)
 
         self.encoding = encoding
         self.quiet = quiet
@@ -365,16 +413,17 @@ class ExecutorImplCommand(sublime_plugin.WindowCommand, ProcessListener):
                 print("[ Executor ] Running " + cmd_string)
             sublime.status_message("Building")
 
-        preferences_settings = \
-            sublime.load_settings("Preferences.sublime-settings")
-        show_panel_on_build = \
-            preferences_settings.get("show_panel_on_build", True)
         if show_panel_on_build:
-            self.window.run_command("show_panel", {"panel": "output.exec"})
+            if self.use_output_view():
+                group, index = self.window.get_view_index(state.output_view)
+                print(f"group {group} index {index} active view {self.window.active_view_in_group(group)} output_view {state.output_view}")
+                if self.window.active_view_in_group(group) != state.output_view:
+                    self.window.focus_view(state.output_view)
+            else:
+                self.window.run_command("show_panel", {"panel": "output.exec"})
 
         self.hide_annotations()
-        self.show_errors_inline = \
-            preferences_settings.get("show_errors_inline", True)
+        self.show_errors_inline = settings.get("show_errors_inline", True)
 
         merged_env = env.copy()
         if self.window.active_view():
@@ -406,13 +455,13 @@ class ExecutorImplCommand(sublime_plugin.WindowCommand, ProcessListener):
 
     def write(self, characters):
         characters = re.sub(r"\x1b\[[^m]*m", "", characters)
-        self.output_view.run_command(
+        self.get_output_view().run_command(
             'append',
             {'characters': characters, 'force': True, 'scroll_to_end': True})
 
         # Updating annotations is expensive, so batch it to the main thread
         def annotations_check():
-            errs = self.output_view.find_all_results_with_text()
+            errs = self.get_output_view().find_all_results_with_text()
             errs_by_file = {}
             for file, line, column, text in errs:
                 if file not in errs_by_file:
@@ -441,8 +490,10 @@ class ExecutorImplCommand(sublime_plugin.WindowCommand, ProcessListener):
             self.write('[Output Truncated]\n')
 
     def on_finished(self, proc):
+        status = None
         print("[ Executor ] Finished " + proc.shell_cmd)
         if proc.killed:
+            status = "CANCEL"
             self.write("[ CANCEL ]\n")
         elif not self.quiet:
             elapsed = time.time() - proc.start_time
@@ -453,8 +504,10 @@ class ExecutorImplCommand(sublime_plugin.WindowCommand, ProcessListener):
 
             exit_code = proc.exit_code()
             if exit_code == 0 or exit_code is None:
+                status = "DONE"
                 self.write("[ DONE ] in %s\n" % elapsed_str)
             else:
+                status = "FAIL"
                 self.write("[ FAIL ] with code %d in %s\n" % (exit_code, elapsed_str))
 
         if not self.window.is_valid():
@@ -463,6 +516,8 @@ class ExecutorImplCommand(sublime_plugin.WindowCommand, ProcessListener):
           set_status(None, self.window.active_view())
           state = get_state(self.window)
           state.proc = None
+          if self.use_output_view():
+            self.get_output_view().set_name("[ %s ] %s" % (status, self.name))
           if cmd := state.next_cmd:
             (cmd, args) = cmd
             state.next_cmd = None
@@ -610,6 +665,33 @@ class ExecutorClearOutputCommand(sublime_plugin.WindowCommand):
   
   def is_enabled(self):
     return bool(self.window.find_output_panel("exec"))
+
+class ExecutorToggleBottomGroupCommand(sublime_plugin.WindowCommand):
+  def run(self, visible = None):
+     window = self.window
+     layout = window.layout()
+     cols = len(layout['cols'])
+     rows = len(layout['rows'])
+     is_visible = rows > 2 and layout['cells'][-1] == [0, rows - 2, cols - 1, rows - 1]
+     active_group = window.active_group()
+     active_view = window.active_view()
+     if is_visible and visible != True:
+        # hide
+        coeff = layout['rows'][-2]
+        new_rows = [(row / coeff) for row in (layout['rows'][:-1])]
+        new_cells = layout['cells'][:-1]
+        window.set_layout({'cells': new_cells, 'rows': new_rows, 'cols': layout['cols']})
+        window.focus_group(active_group)
+        window.focus_view(active_view)
+     elif not is_visible and visible != False:
+        # show
+        settings = sublime.load_settings("Preferences.sublime-settings")
+        coeff = 1.0 - settings.get('executor_bottom_group_ratio', 0.33)
+        new_rows = [row * coeff for row in layout['rows']] + [1.0]
+        new_cells = layout['cells'] + [[0, rows - 1, cols - 1, rows]]
+        window.set_layout({'cells': new_cells, 'rows': new_rows, 'cols': layout['cols']})
+        window.focus_group(active_group)
+        window.focus_view(active_view)
 
 def plugin_unloaded():
   for state in states.values():
