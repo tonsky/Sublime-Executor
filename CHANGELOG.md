@@ -1,3 +1,8 @@
+### 1.4 - Jan 30, 2024
+
+- Support colored output
+- Better escape sequences filter
+
 ### 1.3 - Dec 28, 2023
 
 Ability to redirect output to a view.
