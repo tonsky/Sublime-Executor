@@ -1,3 +1,7 @@
+### 1.4.1 - Feb 6, 2024
+
+- Don’t throw if there are no files/no directories #6
+
 ### 1.4 - Jan 30, 2024
 
 - Support colored output
