@@ -190,7 +190,10 @@ class SelectExecutableInputHandler(sublime_plugin.ListInputHandler):
     return 'Select executable to run'
 
   def list_items(self):
-    return [(cmd["name"], cmd) for cmd in self.executables]
+    if self.executables:
+        return [(cmd["name"], cmd) for cmd in self.executables]
+    else:
+        return [("No executables found", False)]
 
   def next_input(self, args):
     return ArgsInputHandler() if self.args else None
@@ -334,8 +337,12 @@ class ExecutorExecuteShellCommand(sublime_plugin.WindowCommand):
         window = self.window
         if dir:
             dir = os.path.abspath(os.path.expandvars(os.path.expanduser(dir)))
-        else:
+        elif len(window.folders()) > 0:
             dir = window.folders()[0]
+        elif (view := window.active_view()) and (file := view.file_name()):
+            dir = os.path.dirname(file)
+        else:
+            dir = os.path.expanduser("~")
         cmd = {"name": command,
                "cmd": command,
                "cwd": dir}
@@ -715,14 +722,16 @@ class ExecutorImplCommand(sublime_plugin.WindowCommand, ProcessListener):
 
 class ExecutorExecuteWithArgsCommand(sublime_plugin.WindowCommand):
   def run(self, select_executable, args):
-    run_command(self.window, "executor_impl", {"select_executable": select_executable, "args": args})
+    if select_executable:
+        run_command(self.window, "executor_impl", {"select_executable": select_executable, "args": args})
 
   def input(self, args):
       return SelectExecutableInputHandler(self.window, True)
 
 class ExecutorExecuteCommand(sublime_plugin.WindowCommand):
   def run(self, select_executable):
-    run_command(self.window, "executor_impl", {"select_executable": select_executable, "args": ""})
+    if select_executable:
+        run_command(self.window, "executor_impl", {"select_executable": select_executable, "args": ""})
 
   def input(self, args):
     return SelectExecutableInputHandler(self.window, False)
