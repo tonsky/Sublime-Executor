@@ -1,3 +1,7 @@
+### 1.5.0 - Jun 27, 2024
+
+- Added `executor_show_panel_on_output` option
+
 ### 1.4.1 - Feb 6, 2024
 
 - Don’t throw if there are no files/no directories #6

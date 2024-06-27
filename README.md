@@ -45,6 +45,14 @@ Use `Executor: Execute Shell` command or add to your keybindings:
 
 `"dir"` is optional. If omitted, first open directory of current window is used.
 
+## Auto-open panel on output
+
+If you want Sublime to open output panel every time there’s new output, add this to the settings:
+
+```
+"executor_show_panel_on_output": true
+```
+
 ## Outputting to view
 
 Sometimes it’s desirable to redirect output to a real view which can be dragged to its own group or separated. Gives you more options for layout. For that, set

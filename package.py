@@ -524,6 +524,9 @@ class ExecutorImplCommand(sublime_plugin.WindowCommand, ProcessListener):
             set_status(None, window.active_view())
 
     def write(self, characters):
+        if self.window.active_view().settings().get("executor_show_panel_on_output", False):
+            self.window.run_command("show_panel", {"panel": "output.exec"})
+
         state = states[self.window.id()]
         view = self.get_output_view()
 
@@ -562,9 +565,7 @@ class ExecutorImplCommand(sublime_plugin.WindowCommand, ProcessListener):
         iteration(len(characters), len(characters), "")
 
         insertion_point = view.size()
-        self.get_output_view().run_command(
-            'append',
-            {'characters': decolorized, 'force': True, 'scroll_to_end': True})
+        view.run_command('append', {'characters': decolorized, 'force': True, 'scroll_to_end': True})
         
         for region in regions:
             if scope := SCOPES.get(region['bg'], None) or SCOPES.get(region['fg'], None):
@@ -779,12 +780,13 @@ class ExecutorClearOutputImplCommand(sublime_plugin.TextCommand):
     self.view.erase(edit, sublime.Region(0, self.view.size()))
 
 class ExecutorClearOutputCommand(sublime_plugin.WindowCommand):
-  def run(self, panel = 'exec'):
-     if view := self.window.find_output_panel(panel):
-        view.run_command("executor_clear_output_impl")
+  def run(self):
+     state = get_state(self.window)
+     state.output_view.run_command("executor_clear_output_impl")
   
   def is_enabled(self):
-    return bool(self.window.find_output_panel("exec"))
+    state = get_state(self.window)
+    return bool(state.output_view)
 
 class ExecutorToggleBottomGroupCommand(sublime_plugin.WindowCommand):
   def run(self, visible = None):
