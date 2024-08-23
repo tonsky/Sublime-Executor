@@ -1,3 +1,7 @@
+### 1.5.1 - Aug 23, 2024
+
+- Trim command name in status bar #7
+
 ### 1.5.0 - Jun 27, 2024
 
 - Added `executor_show_panel_on_output` option

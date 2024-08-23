@@ -349,7 +349,8 @@ class ExecutorExecuteShellCommand(sublime_plugin.WindowCommand):
         run_command(window, "executor_impl", {"select_executable": cmd, "args": []})
 
     def input(self, args):
-        return CommandInputHandler()
+        if "command" not in args:
+            return CommandInputHandler()
 
 class ExecutorImplCommand(sublime_plugin.WindowCommand, ProcessListener):
     OUTPUT_LIMIT = 2 ** 27
@@ -486,7 +487,7 @@ class ExecutorImplCommand(sublime_plugin.WindowCommand, ProcessListener):
         if show_panel_on_build:
             if self.use_output_view():
                 group, index = self.window.get_view_index(state.output_view)
-                print(f"group {group} index {index} active view {self.window.active_view_in_group(group)} output_view {state.output_view}")
+                # print(f"group {group} index {index} active view {self.window.active_view_in_group(group)} output_view {state.output_view}")
                 if self.window.active_view_in_group(group) != state.output_view:
                     self.window.focus_view(state.output_view)
             else:
@@ -510,7 +511,9 @@ class ExecutorImplCommand(sublime_plugin.WindowCommand, ProcessListener):
         self.should_update_annotations = False
 
         self.write("[ RUN ] \"%s\" in %s\n" % (shell_cmd, working_dir))
-        set_status("▶️ " + cmd["name"], self.window.active_view())
+        max_len = 50
+        cmd_name = cmd["name"] if len(cmd["name"]) <= max_len + 3 else cmd["name"][:max_len] + "..."
+        set_status("▶️ " + cmd_name, self.window.active_view())
 
         try:
             # Forward kwargs to AsyncProcess
