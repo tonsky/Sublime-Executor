@@ -1,6 +1,6 @@
 # Based on Default/exec.py
 
-import codecs, collections, os, re, shutil, signal, subprocess, sys, threading, time
+import codecs, collections, html, os, re, shutil, signal, subprocess, sys, threading, time
 import sublime, sublime_plugin
 from typing import Any, Dict, Tuple
 
@@ -429,6 +429,7 @@ class ExecutorImplCommand(sublime_plugin.WindowCommand, ProcessListener):
             return
 
         state = get_state(self.window)
+        state.command = self
 
         if kill_previous and state.proc:
             state.proc.kill()
@@ -780,6 +781,8 @@ class ExecutorCancelCommand(sublime_plugin.WindowCommand):
 
 class ExecutorClearOutputImplCommand(sublime_plugin.TextCommand):
   def run(self, edit):
+    state = get_state(self.view.window())
+    state.command.hide_annotations()
     self.view.erase(edit, sublime.Region(0, self.view.size()))
 
 class ExecutorClearOutputCommand(sublime_plugin.WindowCommand):
