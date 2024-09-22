@@ -117,10 +117,9 @@ These settings work both in global config and in project file `"settings"`.
 ## Known limitations
 
 - Probably doesn’t work on Windows
-- `!` in `.gitignore` is not supported
-- Global `.gitignore` is not supported
+- `.gitignore` only works with Git installed
 - Sublime Text excludes are not supported
-- On large projects listing might take long time
+- On large projects without Git listing might take long time
 
 ## Credits
 
