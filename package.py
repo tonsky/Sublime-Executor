@@ -102,45 +102,52 @@ def glob_to_re(s):
     pattern = pattern + "($|/)"
   return re.compile(pattern)
 
-def find_executables_impl(acc, folder, ignores):
-  if os.path.exists(folder):
-    local_ignores = ignores.copy()
-    gitignore = os.path.join(folder, ".gitignore")
-    if os.path.exists(gitignore):
-      with open(gitignore, 'rt') as f:
-        # https://git-scm.com/docs/gitignore
-        for line in f.readlines():
-          line = line.strip()
-          if not line:
-            pass
-          elif line.startswith("#"):
-            pass
-          elif line.startswith("!"):
-            pass # TODO negates the pattern; any matching file excluded by a previous pattern will become included again
-          else:
-            local_ignores.append(glob_to_re(line))
-    for name in os.listdir(folder):
-      path = os.path.join(folder, name)
-      matches = [p.pattern for p in local_ignores if re.search(p, path)]
-      if matches:
-        # print("Ignoring %s because of %s" % (path, matches))
-        pass
-      elif os.path.isfile(path):
-        if os.access(path, os.X_OK):
-          acc.append(path)
-          # print(path)
-      elif os.path.isdir(path):
-        find_executables_impl(acc, path, local_ignores)
+def find_executables_slow(cwd):
+  for root, dirs, files in os.walk(cwd):
+    if '.git' in root.split(os.sep):
+      continue
+
+    for file in files:
+      path = os.path.join(root, file)
+      if os.access(path, os.X_OK):
+        yield os.path.relpath(path, cwd)
+
+def find_executables_git(cwd, git):
+  cmd = ("git", "ls-files", r"--format=%(objectmode) %(path)")
+  out = subprocess.check_output(cmd, executable=git, cwd=cwd, text=True)
+
+  for e in out.splitlines(keepends=False):
+    mode, path = e.split(maxsplit=1)
+    if int(mode, base=8) & 0o111:  # check executable bits
+      yield path
 
 def find_executables(window):
-  results = []
+  git = shutil.which("git")
   for folder in window.folders():
-    head, tail = os.path.split(folder)
-    executables = []
-    find_executables_impl(executables, folder, [re.compile("(^|/)\\.git($|/)")])
-    for e in executables:
-      results.append({"name": e[len(head) + 1:], "cmd": "./" + os.path.basename(e), "cwd": os.path.dirname(e)})
-  return results
+    # not every folder may be a repo
+    has_git = False
+    if git is not None:
+      try:
+        subprocess.check_call(
+          ("git", "rev-parse", "--show-toplevel"),
+          executable=git,
+          cwd=folder,
+        )
+        has_git = True
+      except subprocess.CalledProcessError:
+        has_git = False
+
+    if has_git:
+      iter = find_executables_git(folder, git)
+    else:
+      iter = find_executables_slow(folder)
+
+    for e in iter:
+      yield {
+          "name": e,
+          "cmd": f"./{os.path.basename(e)}",
+          "cwd": os.path.dirname(e),
+      }
 
 def run_command(window, cmd, args):
   state = get_state(window)
@@ -182,7 +189,7 @@ class ArgsInputHandler(sublime_plugin.TextInputHandler):
 class SelectExecutableInputHandler(sublime_plugin.ListInputHandler):
   def __init__(self, window, args):
     start = time.perf_counter()
-    self.executables = find_executables(window)
+    self.executables = list(find_executables(window))
     self.args = args
     # print("found %i items in %f ms" % (len(self.executables), (time.perf_counter() - start) * 1000))
 
