@@ -1,7 +1,8 @@
-### WIP
+### 1.5.2 - Nov 17, 2024
 
 - Fixed `result_file_regex` & `result_line_regex`
 - Clear annotations on `executor_clear_output`
+- Put 0.2 sec limit on find_executables
 
 ### 1.5.1 - Aug 23, 2024
 
