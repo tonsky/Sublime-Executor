@@ -103,6 +103,9 @@ def glob_to_re(s):
   return re.compile(pattern)
 
 def find_executables_impl(acc, folder, ignores):
+  global find_start
+  if time.time() - find_start > 0.2:
+    return
   if os.path.exists(folder):
     local_ignores = ignores.copy()
     gitignore = os.path.join(folder, ".gitignore")
@@ -133,6 +136,8 @@ def find_executables_impl(acc, folder, ignores):
         find_executables_impl(acc, path, local_ignores)
 
 def find_executables(window):
+  global find_start
+  find_start = time.time()
   results = []
   for folder in window.folders():
     head, tail = os.path.split(folder)
