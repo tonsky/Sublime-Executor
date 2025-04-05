@@ -497,7 +497,7 @@ class ExecutorImplCommand(sublime_plugin.WindowCommand, ProcessListener):
                 if self.window.active_view_in_group(group) != state.output_view:
                     self.window.focus_view(state.output_view)
             else:
-                self.window.run_command("show_panel", {"panel": "output.exec"})
+                self.window.run_command("executor_show_panel", {"panel": "output.exec"})
 
         self.hide_annotations()
         self.show_errors_inline = settings.get("show_errors_inline", True)
@@ -534,7 +534,7 @@ class ExecutorImplCommand(sublime_plugin.WindowCommand, ProcessListener):
 
     def write(self, characters):
         if self.window.active_view().settings().get("executor_show_panel_on_output", False):
-            self.window.run_command("show_panel", {"panel": "output.exec"})
+            self.window.run_command("executor_show_panel", {"panel": "output.exec"})
 
         state = states[self.window.id()]
         view = self.get_output_view()
@@ -792,8 +792,8 @@ class ExecutorClearOutputImplCommand(sublime_plugin.TextCommand):
 
 class ExecutorClearOutputCommand(sublime_plugin.WindowCommand):
   def run(self):
-     state = get_state(self.window)
-     state.output_view.run_command("executor_clear_output_impl")
+    state = get_state(self.window)
+    state.output_view.run_command("executor_clear_output_impl")
   
   def is_enabled(self):
     state = get_state(self.window)
@@ -801,30 +801,50 @@ class ExecutorClearOutputCommand(sublime_plugin.WindowCommand):
 
 class ExecutorToggleBottomGroupCommand(sublime_plugin.WindowCommand):
   def run(self, visible = None):
-     window = self.window
-     layout = window.layout()
-     cols = len(layout['cols'])
-     rows = len(layout['rows'])
-     is_visible = rows > 2 and layout['cells'][-1] == [0, rows - 2, cols - 1, rows - 1]
-     active_group = window.active_group()
-     active_view = window.active_view()
-     if is_visible and visible != True:
-        # hide
-        coeff = layout['rows'][-2]
-        new_rows = [(row / coeff) for row in (layout['rows'][:-1])]
-        new_cells = layout['cells'][:-1]
-        window.set_layout({'cells': new_cells, 'rows': new_rows, 'cols': layout['cols']})
-        window.focus_group(active_group)
-        window.focus_view(active_view)
-     elif not is_visible and visible != False:
-        # show
-        settings = sublime.load_settings("Preferences.sublime-settings")
-        coeff = 1.0 - settings.get('executor_bottom_group_ratio', 0.33)
-        new_rows = [row * coeff for row in layout['rows']] + [1.0]
-        new_cells = layout['cells'] + [[0, rows - 1, cols - 1, rows]]
-        window.set_layout({'cells': new_cells, 'rows': new_rows, 'cols': layout['cols']})
-        window.focus_group(active_group)
-        window.focus_view(active_view)
+    window = self.window
+    layout = window.layout()
+    cols = len(layout['cols'])
+    rows = len(layout['rows'])
+    is_visible = rows > 2 and layout['cells'][-1] == [0, rows - 2, cols - 1, rows - 1]
+    active_group = window.active_group()
+    active_view = window.active_view()
+    if is_visible and visible != True:
+       # hide
+       coeff = layout['rows'][-2]
+       new_rows = [(row / coeff) for row in (layout['rows'][:-1])]
+       new_cells = layout['cells'][:-1]
+       window.set_layout({'cells': new_cells, 'rows': new_rows, 'cols': layout['cols']})
+       window.focus_group(active_group)
+       window.focus_view(active_view)
+    elif not is_visible and visible != False:
+       # show
+       settings = sublime.load_settings("Preferences.sublime-settings")
+       coeff = 1.0 - settings.get('executor_bottom_group_ratio', 0.33)
+       new_rows = [row * coeff for row in layout['rows']] + [1.0]
+       new_cells = layout['cells'] + [[0, rows - 1, cols - 1, rows]]
+       window.set_layout({'cells': new_cells, 'rows': new_rows, 'cols': layout['cols']})
+       window.focus_group(active_group)
+       window.focus_view(active_view)
+
+class ExecutorShowPanelCommand(sublime_plugin.WindowCommand):
+  def run(self, panel, extra_lines = None):
+    window = self.window
+    window.run_command('show_panel', {'panel': panel})
+
+    for i in range(window.num_groups()):
+      if view := window.active_view_in_group(i):
+        if extra_lines is None:
+          settings = view.settings()
+          extra_lines = settings.get("executor_show_panel_extra_lines", 2)
+
+        if sel := view.sel():
+          cursor = max(r.end() for r in sel)
+          cursor_layout_x, cursor_layout_y = view.text_to_layout(cursor)
+          viewport_x, viewport_y = view.viewport_position()
+          _, viewport_h = view.viewport_extent()
+          line_h = view.line_height()
+          if cursor_layout_y - viewport_y > viewport_h - 8 - line_h * (extra_lines + 1):
+            view.set_viewport_position((viewport_x, cursor_layout_y + line_h * (extra_lines + 1) - viewport_h))
 
 def plugin_unloaded():
   for state in states.values():

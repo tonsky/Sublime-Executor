@@ -53,6 +53,8 @@ If you want Sublime to open output panel every time there’s new output, add th
 "executor_show_panel_on_output": true
 ```
 
+There’s also a `executor_show_panel` command that works the same as built-in `show_panel` but keeps your cursor on screen (Executor uses it by default but you might want to use it for your keybindings).
+
 ## Outputting to view
 
 Sometimes it’s desirable to redirect output to a real view which can be dragged to its own group or separated. Gives you more options for layout. For that, set
