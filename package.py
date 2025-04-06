@@ -49,24 +49,8 @@ BG_ANSI = {
     107: 'light_white'
 }
 
-SCOPES = {
-  'red':           'redish',
-  'green':         'greenish',
-  'brown':         'orangish',
-  'blue':          'bluish',
-  'magenta':       'pinkish', # purplish
-  'cyan':          'cyanish',
-  'light_red':     'redish',
-  'light_green':   'greenish',
-  'light_brown':   'orangish',
-  'light_blue':    'bluish',
-  'light_magenta': 'pinkish',
-  'light_cyan':    'cyanish'
-}
-
 RE_UNKNOWN_ESCAPES = re.compile(r"\x1b[^a-zA-Z]*[a-zA-Z]")
 RE_COLOR_ESCAPES = re.compile(r"\x1b\[((?:;?\d+)*)m")
-RE_NOTSPACE = re.compile(r"[^\s]+")
 
 class State:
   def __init__(self):
@@ -251,6 +235,13 @@ class AsyncProcess:
         for k, v in proc_env.items():
             proc_env[k] = os.path.expandvars(v)
 
+        settings = sublime.load_settings("Preferences.sublime-settings")
+        proc_env["TERM_PROGRAM"] = "Sublime-Executor"
+        if "TERM" not in proc_env:
+          proc_env["TERM"] = settings.get("executor_unix_term", "linux")
+        if "LANG" not in proc_env:
+          proc_env["LANG"] = settings.get("executor_unix_lang", "en_US.UTF-8")
+
         if sys.platform == "win32":
             preexec_fn = None
         else:
@@ -405,6 +396,11 @@ class ExecutorImplCommand(sublime_plugin.WindowCommand, ProcessListener):
         settings.set("line_numbers", False)
         settings.set("gutter", False)
         settings.set("scroll_past_end", False)
+        settings.set("color_scheme", "auto")
+        settings.set("dark_color_scheme", "Executor Dark.hidden-color-scheme")
+        settings.set("light_color_scheme", "Executor Light.hidden-color-scheme")
+
+
         view.assign_syntax(self.syntax)
         if self.use_output_view():
             view.set_name("▶️ [ RUN ] " + self.name)
@@ -577,15 +573,13 @@ class ExecutorImplCommand(sublime_plugin.WindowCommand, ProcessListener):
         view.run_command('append', {'characters': decolorized, 'force': True, 'scroll_to_end': True})
         
         for region in regions:
-            if scope := SCOPES.get(region['bg'], None) or SCOPES.get(region['fg'], None):
-                for m in RE_NOTSPACE.finditer(region['text']):
-                    start = insertion_point + region['start'] + m.start()
-                    end = start + len(m.group(0))
-                    state.region_id += 1
-                    view.add_regions(
-                                "executor#{}".format(state.region_id),
-                                [sublime.Region(start, end)],
-                                'region.' + scope)
+            fg = region['fg']
+            bg = region['bg']
+            scope = f'executor.{ fg }.{ bg }'
+            start = insertion_point + region['start']
+            end = insertion_point + region['end']
+            state.region_id += 1
+            view.add_regions("executor#{}".format(state.region_id), [sublime.Region(start, end)], scope)
 
         # Updating annotations is expensive, so batch it to the main thread
         def annotations_check():

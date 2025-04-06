@@ -1,0 +1,1660 @@
+{
+    "name": "Executor Light",
+    "variables": {
+        "background": "#fffffe",
+        "foreground": "#000000",
+        "caret": "#929292",
+        "block_caret": "#929292",
+        "selection": "#B3D7FF",
+        "selection_foreground": "#000000",
+        "black": "#000000",
+        "red": "#990000",
+        "green": "#00a600",
+        "brown": "#999900",
+        "blue": "#0000b2",
+        "magenta": "#b200b2",
+        "cyan": "#00a6b3",
+        "white": "#bfbfbf",
+        "light_black": "#666666",
+        "light_red": "#e60000",
+        "light_green": "#00d800",
+        "light_brown": "#e6e600",
+        "light_blue": "#0000ff",
+        "light_magenta": "#e600e6",
+        "light_cyan": "#00e6e6",
+        "light_white": "#e6e6e6"
+    },
+    "globals": {
+        "background": "#ffffff",
+        "foreground": "var(foreground)",
+        "caret": "var(caret)",
+        "block_caret": "var(block_caret)",
+        "selection": "var(selection)",
+        "selection_foreground": "var(selection_foreground)",
+        "selection_corner_style": "square",
+        "selection_border_width": "0",
+        "line_highlight": "#00000008",
+    },
+    "rules": [
+        {
+            "scope": "executor.black.black",
+            "foreground": "var(black)",
+            "background": "var(black)"
+        },
+        {
+            "scope": "executor.black.red",
+            "foreground": "var(black)",
+            "background": "var(red)"
+        },
+        {
+            "scope": "executor.black.green",
+            "foreground": "var(black)",
+            "background": "var(green)"
+        },
+        {
+            "scope": "executor.black.brown",
+            "foreground": "var(black)",
+            "background": "var(brown)"
+        },
+        {
+            "scope": "executor.black.blue",
+            "foreground": "var(black)",
+            "background": "var(blue)"
+        },
+        {
+            "scope": "executor.black.magenta",
+            "foreground": "var(black)",
+            "background": "var(magenta)"
+        },
+        {
+            "scope": "executor.black.cyan",
+            "foreground": "var(black)",
+            "background": "var(cyan)"
+        },
+        {
+            "scope": "executor.black.white",
+            "foreground": "var(black)",
+            "background": "var(white)"
+        },
+        {
+            "scope": "executor.black.light_black",
+            "foreground": "var(black)",
+            "background": "var(light_black)"
+        },
+        {
+            "scope": "executor.black.light_red",
+            "foreground": "var(black)",
+            "background": "var(light_red)"
+        },
+        {
+            "scope": "executor.black.light_green",
+            "foreground": "var(black)",
+            "background": "var(light_green)"
+        },
+        {
+            "scope": "executor.black.light_brown",
+            "foreground": "var(black)",
+            "background": "var(light_brown)"
+        },
+        {
+            "scope": "executor.black.light_blue",
+            "foreground": "var(black)",
+            "background": "var(light_blue)"
+        },
+        {
+            "scope": "executor.black.light_magenta",
+            "foreground": "var(black)",
+            "background": "var(light_magenta)"
+        },
+        {
+            "scope": "executor.black.light_cyan",
+            "foreground": "var(black)",
+            "background": "var(light_cyan)"
+        },
+        {
+            "scope": "executor.black.light_white",
+            "foreground": "var(black)",
+            "background": "var(light_white)"
+        },
+        {
+            "scope": "executor.black.default",
+            "foreground": "var(black)",
+            "background": "var(background)"
+        },
+        {
+            "scope": "executor.black.reverse_default",
+            "foreground": "var(black)",
+            "background": "var(foreground)"
+        },
+        {
+            "scope": "executor.red.black",
+            "foreground": "var(red)",
+            "background": "var(black)"
+        },
+        {
+            "scope": "executor.red.red",
+            "foreground": "var(red)",
+            "background": "var(red)"
+        },
+        {
+            "scope": "executor.red.green",
+            "foreground": "var(red)",
+            "background": "var(green)"
+        },
+        {
+            "scope": "executor.red.brown",
+            "foreground": "var(red)",
+            "background": "var(brown)"
+        },
+        {
+            "scope": "executor.red.blue",
+            "foreground": "var(red)",
+            "background": "var(blue)"
+        },
+        {
+            "scope": "executor.red.magenta",
+            "foreground": "var(red)",
+            "background": "var(magenta)"
+        },
+        {
+            "scope": "executor.red.cyan",
+            "foreground": "var(red)",
+            "background": "var(cyan)"
+        },
+        {
+            "scope": "executor.red.white",
+            "foreground": "var(red)",
+            "background": "var(white)"
+        },
+        {
+            "scope": "executor.red.light_black",
+            "foreground": "var(red)",
+            "background": "var(light_black)"
+        },
+        {
+            "scope": "executor.red.light_red",
+            "foreground": "var(red)",
+            "background": "var(light_red)"
+        },
+        {
+            "scope": "executor.red.light_green",
+            "foreground": "var(red)",
+            "background": "var(light_green)"
+        },
+        {
+            "scope": "executor.red.light_brown",
+            "foreground": "var(red)",
+            "background": "var(light_brown)"
+        },
+        {
+            "scope": "executor.red.light_blue",
+            "foreground": "var(red)",
+            "background": "var(light_blue)"
+        },
+        {
+            "scope": "executor.red.light_magenta",
+            "foreground": "var(red)",
+            "background": "var(light_magenta)"
+        },
+        {
+            "scope": "executor.red.light_cyan",
+            "foreground": "var(red)",
+            "background": "var(light_cyan)"
+        },
+        {
+            "scope": "executor.red.light_white",
+            "foreground": "var(red)",
+            "background": "var(light_white)"
+        },
+        {
+            "scope": "executor.red.default",
+            "foreground": "var(red)",
+            "background": "var(background)"
+        },
+        {
+            "scope": "executor.red.reverse_default",
+            "foreground": "var(red)",
+            "background": "var(foreground)"
+        },
+        {
+            "scope": "executor.green.black",
+            "foreground": "var(green)",
+            "background": "var(black)"
+        },
+        {
+            "scope": "executor.green.red",
+            "foreground": "var(green)",
+            "background": "var(red)"
+        },
+        {
+            "scope": "executor.green.green",
+            "foreground": "var(green)",
+            "background": "var(green)"
+        },
+        {
+            "scope": "executor.green.brown",
+            "foreground": "var(green)",
+            "background": "var(brown)"
+        },
+        {
+            "scope": "executor.green.blue",
+            "foreground": "var(green)",
+            "background": "var(blue)"
+        },
+        {
+            "scope": "executor.green.magenta",
+            "foreground": "var(green)",
+            "background": "var(magenta)"
+        },
+        {
+            "scope": "executor.green.cyan",
+            "foreground": "var(green)",
+            "background": "var(cyan)"
+        },
+        {
+            "scope": "executor.green.white",
+            "foreground": "var(green)",
+            "background": "var(white)"
+        },
+        {
+            "scope": "executor.green.light_black",
+            "foreground": "var(green)",
+            "background": "var(light_black)"
+        },
+        {
+            "scope": "executor.green.light_red",
+            "foreground": "var(green)",
+            "background": "var(light_red)"
+        },
+        {
+            "scope": "executor.green.light_green",
+            "foreground": "var(green)",
+            "background": "var(light_green)"
+        },
+        {
+            "scope": "executor.green.light_brown",
+            "foreground": "var(green)",
+            "background": "var(light_brown)"
+        },
+        {
+            "scope": "executor.green.light_blue",
+            "foreground": "var(green)",
+            "background": "var(light_blue)"
+        },
+        {
+            "scope": "executor.green.light_magenta",
+            "foreground": "var(green)",
+            "background": "var(light_magenta)"
+        },
+        {
+            "scope": "executor.green.light_cyan",
+            "foreground": "var(green)",
+            "background": "var(light_cyan)"
+        },
+        {
+            "scope": "executor.green.light_white",
+            "foreground": "var(green)",
+            "background": "var(light_white)"
+        },
+        {
+            "scope": "executor.green.default",
+            "foreground": "var(green)",
+            "background": "var(background)"
+        },
+        {
+            "scope": "executor.green.reverse_default",
+            "foreground": "var(green)",
+            "background": "var(foreground)"
+        },
+        {
+            "scope": "executor.brown.black",
+            "foreground": "var(brown)",
+            "background": "var(black)"
+        },
+        {
+            "scope": "executor.brown.red",
+            "foreground": "var(brown)",
+            "background": "var(red)"
+        },
+        {
+            "scope": "executor.brown.green",
+            "foreground": "var(brown)",
+            "background": "var(green)"
+        },
+        {
+            "scope": "executor.brown.brown",
+            "foreground": "var(brown)",
+            "background": "var(brown)"
+        },
+        {
+            "scope": "executor.brown.blue",
+            "foreground": "var(brown)",
+            "background": "var(blue)"
+        },
+        {
+            "scope": "executor.brown.magenta",
+            "foreground": "var(brown)",
+            "background": "var(magenta)"
+        },
+        {
+            "scope": "executor.brown.cyan",
+            "foreground": "var(brown)",
+            "background": "var(cyan)"
+        },
+        {
+            "scope": "executor.brown.white",
+            "foreground": "var(brown)",
+            "background": "var(white)"
+        },
+        {
+            "scope": "executor.brown.light_black",
+            "foreground": "var(brown)",
+            "background": "var(light_black)"
+        },
+        {
+            "scope": "executor.brown.light_red",
+            "foreground": "var(brown)",
+            "background": "var(light_red)"
+        },
+        {
+            "scope": "executor.brown.light_green",
+            "foreground": "var(brown)",
+            "background": "var(light_green)"
+        },
+        {
+            "scope": "executor.brown.light_brown",
+            "foreground": "var(brown)",
+            "background": "var(light_brown)"
+        },
+        {
+            "scope": "executor.brown.light_blue",
+            "foreground": "var(brown)",
+            "background": "var(light_blue)"
+        },
+        {
+            "scope": "executor.brown.light_magenta",
+            "foreground": "var(brown)",
+            "background": "var(light_magenta)"
+        },
+        {
+            "scope": "executor.brown.light_cyan",
+            "foreground": "var(brown)",
+            "background": "var(light_cyan)"
+        },
+        {
+            "scope": "executor.brown.light_white",
+            "foreground": "var(brown)",
+            "background": "var(light_white)"
+        },
+        {
+            "scope": "executor.brown.default",
+            "foreground": "var(brown)",
+            "background": "var(background)"
+        },
+        {
+            "scope": "executor.brown.reverse_default",
+            "foreground": "var(brown)",
+            "background": "var(foreground)"
+        },
+        {
+            "scope": "executor.blue.black",
+            "foreground": "var(blue)",
+            "background": "var(black)"
+        },
+        {
+            "scope": "executor.blue.red",
+            "foreground": "var(blue)",
+            "background": "var(red)"
+        },
+        {
+            "scope": "executor.blue.green",
+            "foreground": "var(blue)",
+            "background": "var(green)"
+        },
+        {
+            "scope": "executor.blue.brown",
+            "foreground": "var(blue)",
+            "background": "var(brown)"
+        },
+        {
+            "scope": "executor.blue.blue",
+            "foreground": "var(blue)",
+            "background": "var(blue)"
+        },
+        {
+            "scope": "executor.blue.magenta",
+            "foreground": "var(blue)",
+            "background": "var(magenta)"
+        },
+        {
+            "scope": "executor.blue.cyan",
+            "foreground": "var(blue)",
+            "background": "var(cyan)"
+        },
+        {
+            "scope": "executor.blue.white",
+            "foreground": "var(blue)",
+            "background": "var(white)"
+        },
+        {
+            "scope": "executor.blue.light_black",
+            "foreground": "var(blue)",
+            "background": "var(light_black)"
+        },
+        {
+            "scope": "executor.blue.light_red",
+            "foreground": "var(blue)",
+            "background": "var(light_red)"
+        },
+        {
+            "scope": "executor.blue.light_green",
+            "foreground": "var(blue)",
+            "background": "var(light_green)"
+        },
+        {
+            "scope": "executor.blue.light_brown",
+            "foreground": "var(blue)",
+            "background": "var(light_brown)"
+        },
+        {
+            "scope": "executor.blue.light_blue",
+            "foreground": "var(blue)",
+            "background": "var(light_blue)"
+        },
+        {
+            "scope": "executor.blue.light_magenta",
+            "foreground": "var(blue)",
+            "background": "var(light_magenta)"
+        },
+        {
+            "scope": "executor.blue.light_cyan",
+            "foreground": "var(blue)",
+            "background": "var(light_cyan)"
+        },
+        {
+            "scope": "executor.blue.light_white",
+            "foreground": "var(blue)",
+            "background": "var(light_white)"
+        },
+        {
+            "scope": "executor.blue.default",
+            "foreground": "var(blue)",
+            "background": "var(background)"
+        },
+        {
+            "scope": "executor.blue.reverse_default",
+            "foreground": "var(blue)",
+            "background": "var(foreground)"
+        },
+        {
+            "scope": "executor.magenta.black",
+            "foreground": "var(magenta)",
+            "background": "var(black)"
+        },
+        {
+            "scope": "executor.magenta.red",
+            "foreground": "var(magenta)",
+            "background": "var(red)"
+        },
+        {
+            "scope": "executor.magenta.green",
+            "foreground": "var(magenta)",
+            "background": "var(green)"
+        },
+        {
+            "scope": "executor.magenta.brown",
+            "foreground": "var(magenta)",
+            "background": "var(brown)"
+        },
+        {
+            "scope": "executor.magenta.blue",
+            "foreground": "var(magenta)",
+            "background": "var(blue)"
+        },
+        {
+            "scope": "executor.magenta.magenta",
+            "foreground": "var(magenta)",
+            "background": "var(magenta)"
+        },
+        {
+            "scope": "executor.magenta.cyan",
+            "foreground": "var(magenta)",
+            "background": "var(cyan)"
+        },
+        {
+            "scope": "executor.magenta.white",
+            "foreground": "var(magenta)",
+            "background": "var(white)"
+        },
+        {
+            "scope": "executor.magenta.light_black",
+            "foreground": "var(magenta)",
+            "background": "var(light_black)"
+        },
+        {
+            "scope": "executor.magenta.light_red",
+            "foreground": "var(magenta)",
+            "background": "var(light_red)"
+        },
+        {
+            "scope": "executor.magenta.light_green",
+            "foreground": "var(magenta)",
+            "background": "var(light_green)"
+        },
+        {
+            "scope": "executor.magenta.light_brown",
+            "foreground": "var(magenta)",
+            "background": "var(light_brown)"
+        },
+        {
+            "scope": "executor.magenta.light_blue",
+            "foreground": "var(magenta)",
+            "background": "var(light_blue)"
+        },
+        {
+            "scope": "executor.magenta.light_magenta",
+            "foreground": "var(magenta)",
+            "background": "var(light_magenta)"
+        },
+        {
+            "scope": "executor.magenta.light_cyan",
+            "foreground": "var(magenta)",
+            "background": "var(light_cyan)"
+        },
+        {
+            "scope": "executor.magenta.light_white",
+            "foreground": "var(magenta)",
+            "background": "var(light_white)"
+        },
+        {
+            "scope": "executor.magenta.default",
+            "foreground": "var(magenta)",
+            "background": "var(background)"
+        },
+        {
+            "scope": "executor.magenta.reverse_default",
+            "foreground": "var(magenta)",
+            "background": "var(foreground)"
+        },
+        {
+            "scope": "executor.cyan.black",
+            "foreground": "var(cyan)",
+            "background": "var(black)"
+        },
+        {
+            "scope": "executor.cyan.red",
+            "foreground": "var(cyan)",
+            "background": "var(red)"
+        },
+        {
+            "scope": "executor.cyan.green",
+            "foreground": "var(cyan)",
+            "background": "var(green)"
+        },
+        {
+            "scope": "executor.cyan.brown",
+            "foreground": "var(cyan)",
+            "background": "var(brown)"
+        },
+        {
+            "scope": "executor.cyan.blue",
+            "foreground": "var(cyan)",
+            "background": "var(blue)"
+        },
+        {
+            "scope": "executor.cyan.magenta",
+            "foreground": "var(cyan)",
+            "background": "var(magenta)"
+        },
+        {
+            "scope": "executor.cyan.cyan",
+            "foreground": "var(cyan)",
+            "background": "var(cyan)"
+        },
+        {
+            "scope": "executor.cyan.white",
+            "foreground": "var(cyan)",
+            "background": "var(white)"
+        },
+        {
+            "scope": "executor.cyan.light_black",
+            "foreground": "var(cyan)",
+            "background": "var(light_black)"
+        },
+        {
+            "scope": "executor.cyan.light_red",
+            "foreground": "var(cyan)",
+            "background": "var(light_red)"
+        },
+        {
+            "scope": "executor.cyan.light_green",
+            "foreground": "var(cyan)",
+            "background": "var(light_green)"
+        },
+        {
+            "scope": "executor.cyan.light_brown",
+            "foreground": "var(cyan)",
+            "background": "var(light_brown)"
+        },
+        {
+            "scope": "executor.cyan.light_blue",
+            "foreground": "var(cyan)",
+            "background": "var(light_blue)"
+        },
+        {
+            "scope": "executor.cyan.light_magenta",
+            "foreground": "var(cyan)",
+            "background": "var(light_magenta)"
+        },
+        {
+            "scope": "executor.cyan.light_cyan",
+            "foreground": "var(cyan)",
+            "background": "var(light_cyan)"
+        },
+        {
+            "scope": "executor.cyan.light_white",
+            "foreground": "var(cyan)",
+            "background": "var(light_white)"
+        },
+        {
+            "scope": "executor.cyan.default",
+            "foreground": "var(cyan)",
+            "background": "var(background)"
+        },
+        {
+            "scope": "executor.cyan.reverse_default",
+            "foreground": "var(cyan)",
+            "background": "var(foreground)"
+        },
+        {
+            "scope": "executor.white.black",
+            "foreground": "var(white)",
+            "background": "var(black)"
+        },
+        {
+            "scope": "executor.white.red",
+            "foreground": "var(white)",
+            "background": "var(red)"
+        },
+        {
+            "scope": "executor.white.green",
+            "foreground": "var(white)",
+            "background": "var(green)"
+        },
+        {
+            "scope": "executor.white.brown",
+            "foreground": "var(white)",
+            "background": "var(brown)"
+        },
+        {
+            "scope": "executor.white.blue",
+            "foreground": "var(white)",
+            "background": "var(blue)"
+        },
+        {
+            "scope": "executor.white.magenta",
+            "foreground": "var(white)",
+            "background": "var(magenta)"
+        },
+        {
+            "scope": "executor.white.cyan",
+            "foreground": "var(white)",
+            "background": "var(cyan)"
+        },
+        {
+            "scope": "executor.white.white",
+            "foreground": "var(white)",
+            "background": "var(white)"
+        },
+        {
+            "scope": "executor.white.light_black",
+            "foreground": "var(white)",
+            "background": "var(light_black)"
+        },
+        {
+            "scope": "executor.white.light_red",
+            "foreground": "var(white)",
+            "background": "var(light_red)"
+        },
+        {
+            "scope": "executor.white.light_green",
+            "foreground": "var(white)",
+            "background": "var(light_green)"
+        },
+        {
+            "scope": "executor.white.light_brown",
+            "foreground": "var(white)",
+            "background": "var(light_brown)"
+        },
+        {
+            "scope": "executor.white.light_blue",
+            "foreground": "var(white)",
+            "background": "var(light_blue)"
+        },
+        {
+            "scope": "executor.white.light_magenta",
+            "foreground": "var(white)",
+            "background": "var(light_magenta)"
+        },
+        {
+            "scope": "executor.white.light_cyan",
+            "foreground": "var(white)",
+            "background": "var(light_cyan)"
+        },
+        {
+            "scope": "executor.white.light_white",
+            "foreground": "var(white)",
+            "background": "var(light_white)"
+        },
+        {
+            "scope": "executor.white.default",
+            "foreground": "var(white)",
+            "background": "var(background)"
+        },
+        {
+            "scope": "executor.white.reverse_default",
+            "foreground": "var(white)",
+            "background": "var(foreground)"
+        },
+        {
+            "scope": "executor.light_black.black",
+            "foreground": "var(light_black)",
+            "background": "var(black)"
+        },
+        {
+            "scope": "executor.light_black.red",
+            "foreground": "var(light_black)",
+            "background": "var(red)"
+        },
+        {
+            "scope": "executor.light_black.green",
+            "foreground": "var(light_black)",
+            "background": "var(green)"
+        },
+        {
+            "scope": "executor.light_black.brown",
+            "foreground": "var(light_black)",
+            "background": "var(brown)"
+        },
+        {
+            "scope": "executor.light_black.blue",
+            "foreground": "var(light_black)",
+            "background": "var(blue)"
+        },
+        {
+            "scope": "executor.light_black.magenta",
+            "foreground": "var(light_black)",
+            "background": "var(magenta)"
+        },
+        {
+            "scope": "executor.light_black.cyan",
+            "foreground": "var(light_black)",
+            "background": "var(cyan)"
+        },
+        {
+            "scope": "executor.light_black.white",
+            "foreground": "var(light_black)",
+            "background": "var(white)"
+        },
+        {
+            "scope": "executor.light_black.light_black",
+            "foreground": "var(light_black)",
+            "background": "var(light_black)"
+        },
+        {
+            "scope": "executor.light_black.light_red",
+            "foreground": "var(light_black)",
+            "background": "var(light_red)"
+        },
+        {
+            "scope": "executor.light_black.light_green",
+            "foreground": "var(light_black)",
+            "background": "var(light_green)"
+        },
+        {
+            "scope": "executor.light_black.light_brown",
+            "foreground": "var(light_black)",
+            "background": "var(light_brown)"
+        },
+        {
+            "scope": "executor.light_black.light_blue",
+            "foreground": "var(light_black)",
+            "background": "var(light_blue)"
+        },
+        {
+            "scope": "executor.light_black.light_magenta",
+            "foreground": "var(light_black)",
+            "background": "var(light_magenta)"
+        },
+        {
+            "scope": "executor.light_black.light_cyan",
+            "foreground": "var(light_black)",
+            "background": "var(light_cyan)"
+        },
+        {
+            "scope": "executor.light_black.light_white",
+            "foreground": "var(light_black)",
+            "background": "var(light_white)"
+        },
+        {
+            "scope": "executor.light_black.default",
+            "foreground": "var(light_black)",
+            "background": "var(background)"
+        },
+        {
+            "scope": "executor.light_black.reverse_default",
+            "foreground": "var(light_black)",
+            "background": "var(foreground)"
+        },
+        {
+            "scope": "executor.light_red.black",
+            "foreground": "var(light_red)",
+            "background": "var(black)"
+        },
+        {
+            "scope": "executor.light_red.red",
+            "foreground": "var(light_red)",
+            "background": "var(red)"
+        },
+        {
+            "scope": "executor.light_red.green",
+            "foreground": "var(light_red)",
+            "background": "var(green)"
+        },
+        {
+            "scope": "executor.light_red.brown",
+            "foreground": "var(light_red)",
+            "background": "var(brown)"
+        },
+        {
+            "scope": "executor.light_red.blue",
+            "foreground": "var(light_red)",
+            "background": "var(blue)"
+        },
+        {
+            "scope": "executor.light_red.magenta",
+            "foreground": "var(light_red)",
+            "background": "var(magenta)"
+        },
+        {
+            "scope": "executor.light_red.cyan",
+            "foreground": "var(light_red)",
+            "background": "var(cyan)"
+        },
+        {
+            "scope": "executor.light_red.white",
+            "foreground": "var(light_red)",
+            "background": "var(white)"
+        },
+        {
+            "scope": "executor.light_red.light_black",
+            "foreground": "var(light_red)",
+            "background": "var(light_black)"
+        },
+        {
+            "scope": "executor.light_red.light_red",
+            "foreground": "var(light_red)",
+            "background": "var(light_red)"
+        },
+        {
+            "scope": "executor.light_red.light_green",
+            "foreground": "var(light_red)",
+            "background": "var(light_green)"
+        },
+        {
+            "scope": "executor.light_red.light_brown",
+            "foreground": "var(light_red)",
+            "background": "var(light_brown)"
+        },
+        {
+            "scope": "executor.light_red.light_blue",
+            "foreground": "var(light_red)",
+            "background": "var(light_blue)"
+        },
+        {
+            "scope": "executor.light_red.light_magenta",
+            "foreground": "var(light_red)",
+            "background": "var(light_magenta)"
+        },
+        {
+            "scope": "executor.light_red.light_cyan",
+            "foreground": "var(light_red)",
+            "background": "var(light_cyan)"
+        },
+        {
+            "scope": "executor.light_red.light_white",
+            "foreground": "var(light_red)",
+            "background": "var(light_white)"
+        },
+        {
+            "scope": "executor.light_red.default",
+            "foreground": "var(light_red)",
+            "background": "var(background)"
+        },
+        {
+            "scope": "executor.light_red.reverse_default",
+            "foreground": "var(light_red)",
+            "background": "var(foreground)"
+        },
+        {
+            "scope": "executor.light_green.black",
+            "foreground": "var(light_green)",
+            "background": "var(black)"
+        },
+        {
+            "scope": "executor.light_green.red",
+            "foreground": "var(light_green)",
+            "background": "var(red)"
+        },
+        {
+            "scope": "executor.light_green.green",
+            "foreground": "var(light_green)",
+            "background": "var(green)"
+        },
+        {
+            "scope": "executor.light_green.brown",
+            "foreground": "var(light_green)",
+            "background": "var(brown)"
+        },
+        {
+            "scope": "executor.light_green.blue",
+            "foreground": "var(light_green)",
+            "background": "var(blue)"
+        },
+        {
+            "scope": "executor.light_green.magenta",
+            "foreground": "var(light_green)",
+            "background": "var(magenta)"
+        },
+        {
+            "scope": "executor.light_green.cyan",
+            "foreground": "var(light_green)",
+            "background": "var(cyan)"
+        },
+        {
+            "scope": "executor.light_green.white",
+            "foreground": "var(light_green)",
+            "background": "var(white)"
+        },
+        {
+            "scope": "executor.light_green.light_black",
+            "foreground": "var(light_green)",
+            "background": "var(light_black)"
+        },
+        {
+            "scope": "executor.light_green.light_red",
+            "foreground": "var(light_green)",
+            "background": "var(light_red)"
+        },
+        {
+            "scope": "executor.light_green.light_green",
+            "foreground": "var(light_green)",
+            "background": "var(light_green)"
+        },
+        {
+            "scope": "executor.light_green.light_brown",
+            "foreground": "var(light_green)",
+            "background": "var(light_brown)"
+        },
+        {
+            "scope": "executor.light_green.light_blue",
+            "foreground": "var(light_green)",
+            "background": "var(light_blue)"
+        },
+        {
+            "scope": "executor.light_green.light_magenta",
+            "foreground": "var(light_green)",
+            "background": "var(light_magenta)"
+        },
+        {
+            "scope": "executor.light_green.light_cyan",
+            "foreground": "var(light_green)",
+            "background": "var(light_cyan)"
+        },
+        {
+            "scope": "executor.light_green.light_white",
+            "foreground": "var(light_green)",
+            "background": "var(light_white)"
+        },
+        {
+            "scope": "executor.light_green.default",
+            "foreground": "var(light_green)",
+            "background": "var(background)"
+        },
+        {
+            "scope": "executor.light_green.reverse_default",
+            "foreground": "var(light_green)",
+            "background": "var(foreground)"
+        },
+        {
+            "scope": "executor.light_brown.black",
+            "foreground": "var(light_brown)",
+            "background": "var(black)"
+        },
+        {
+            "scope": "executor.light_brown.red",
+            "foreground": "var(light_brown)",
+            "background": "var(red)"
+        },
+        {
+            "scope": "executor.light_brown.green",
+            "foreground": "var(light_brown)",
+            "background": "var(green)"
+        },
+        {
+            "scope": "executor.light_brown.brown",
+            "foreground": "var(light_brown)",
+            "background": "var(brown)"
+        },
+        {
+            "scope": "executor.light_brown.blue",
+            "foreground": "var(light_brown)",
+            "background": "var(blue)"
+        },
+        {
+            "scope": "executor.light_brown.magenta",
+            "foreground": "var(light_brown)",
+            "background": "var(magenta)"
+        },
+        {
+            "scope": "executor.light_brown.cyan",
+            "foreground": "var(light_brown)",
+            "background": "var(cyan)"
+        },
+        {
+            "scope": "executor.light_brown.white",
+            "foreground": "var(light_brown)",
+            "background": "var(white)"
+        },
+        {
+            "scope": "executor.light_brown.light_black",
+            "foreground": "var(light_brown)",
+            "background": "var(light_black)"
+        },
+        {
+            "scope": "executor.light_brown.light_red",
+            "foreground": "var(light_brown)",
+            "background": "var(light_red)"
+        },
+        {
+            "scope": "executor.light_brown.light_green",
+            "foreground": "var(light_brown)",
+            "background": "var(light_green)"
+        },
+        {
+            "scope": "executor.light_brown.light_brown",
+            "foreground": "var(light_brown)",
+            "background": "var(light_brown)"
+        },
+        {
+            "scope": "executor.light_brown.light_blue",
+            "foreground": "var(light_brown)",
+            "background": "var(light_blue)"
+        },
+        {
+            "scope": "executor.light_brown.light_magenta",
+            "foreground": "var(light_brown)",
+            "background": "var(light_magenta)"
+        },
+        {
+            "scope": "executor.light_brown.light_cyan",
+            "foreground": "var(light_brown)",
+            "background": "var(light_cyan)"
+        },
+        {
+            "scope": "executor.light_brown.light_white",
+            "foreground": "var(light_brown)",
+            "background": "var(light_white)"
+        },
+        {
+            "scope": "executor.light_brown.default",
+            "foreground": "var(light_brown)",
+            "background": "var(background)"
+        },
+        {
+            "scope": "executor.light_brown.reverse_default",
+            "foreground": "var(light_brown)",
+            "background": "var(foreground)"
+        },
+        {
+            "scope": "executor.light_blue.black",
+            "foreground": "var(light_blue)",
+            "background": "var(black)"
+        },
+        {
+            "scope": "executor.light_blue.red",
+            "foreground": "var(light_blue)",
+            "background": "var(red)"
+        },
+        {
+            "scope": "executor.light_blue.green",
+            "foreground": "var(light_blue)",
+            "background": "var(green)"
+        },
+        {
+            "scope": "executor.light_blue.brown",
+            "foreground": "var(light_blue)",
+            "background": "var(brown)"
+        },
+        {
+            "scope": "executor.light_blue.blue",
+            "foreground": "var(light_blue)",
+            "background": "var(blue)"
+        },
+        {
+            "scope": "executor.light_blue.magenta",
+            "foreground": "var(light_blue)",
+            "background": "var(magenta)"
+        },
+        {
+            "scope": "executor.light_blue.cyan",
+            "foreground": "var(light_blue)",
+            "background": "var(cyan)"
+        },
+        {
+            "scope": "executor.light_blue.white",
+            "foreground": "var(light_blue)",
+            "background": "var(white)"
+        },
+        {
+            "scope": "executor.light_blue.light_black",
+            "foreground": "var(light_blue)",
+            "background": "var(light_black)"
+        },
+        {
+            "scope": "executor.light_blue.light_red",
+            "foreground": "var(light_blue)",
+            "background": "var(light_red)"
+        },
+        {
+            "scope": "executor.light_blue.light_green",
+            "foreground": "var(light_blue)",
+            "background": "var(light_green)"
+        },
+        {
+            "scope": "executor.light_blue.light_brown",
+            "foreground": "var(light_blue)",
+            "background": "var(light_brown)"
+        },
+        {
+            "scope": "executor.light_blue.light_blue",
+            "foreground": "var(light_blue)",
+            "background": "var(light_blue)"
+        },
+        {
+            "scope": "executor.light_blue.light_magenta",
+            "foreground": "var(light_blue)",
+            "background": "var(light_magenta)"
+        },
+        {
+            "scope": "executor.light_blue.light_cyan",
+            "foreground": "var(light_blue)",
+            "background": "var(light_cyan)"
+        },
+        {
+            "scope": "executor.light_blue.light_white",
+            "foreground": "var(light_blue)",
+            "background": "var(light_white)"
+        },
+        {
+            "scope": "executor.light_blue.default",
+            "foreground": "var(light_blue)",
+            "background": "var(background)"
+        },
+        {
+            "scope": "executor.light_blue.reverse_default",
+            "foreground": "var(light_blue)",
+            "background": "var(foreground)"
+        },
+        {
+            "scope": "executor.light_magenta.black",
+            "foreground": "var(light_magenta)",
+            "background": "var(black)"
+        },
+        {
+            "scope": "executor.light_magenta.red",
+            "foreground": "var(light_magenta)",
+            "background": "var(red)"
+        },
+        {
+            "scope": "executor.light_magenta.green",
+            "foreground": "var(light_magenta)",
+            "background": "var(green)"
+        },
+        {
+            "scope": "executor.light_magenta.brown",
+            "foreground": "var(light_magenta)",
+            "background": "var(brown)"
+        },
+        {
+            "scope": "executor.light_magenta.blue",
+            "foreground": "var(light_magenta)",
+            "background": "var(blue)"
+        },
+        {
+            "scope": "executor.light_magenta.magenta",
+            "foreground": "var(light_magenta)",
+            "background": "var(magenta)"
+        },
+        {
+            "scope": "executor.light_magenta.cyan",
+            "foreground": "var(light_magenta)",
+            "background": "var(cyan)"
+        },
+        {
+            "scope": "executor.light_magenta.white",
+            "foreground": "var(light_magenta)",
+            "background": "var(white)"
+        },
+        {
+            "scope": "executor.light_magenta.light_black",
+            "foreground": "var(light_magenta)",
+            "background": "var(light_black)"
+        },
+        {
+            "scope": "executor.light_magenta.light_red",
+            "foreground": "var(light_magenta)",
+            "background": "var(light_red)"
+        },
+        {
+            "scope": "executor.light_magenta.light_green",
+            "foreground": "var(light_magenta)",
+            "background": "var(light_green)"
+        },
+        {
+            "scope": "executor.light_magenta.light_brown",
+            "foreground": "var(light_magenta)",
+            "background": "var(light_brown)"
+        },
+        {
+            "scope": "executor.light_magenta.light_blue",
+            "foreground": "var(light_magenta)",
+            "background": "var(light_blue)"
+        },
+        {
+            "scope": "executor.light_magenta.light_magenta",
+            "foreground": "var(light_magenta)",
+            "background": "var(light_magenta)"
+        },
+        {
+            "scope": "executor.light_magenta.light_cyan",
+            "foreground": "var(light_magenta)",
+            "background": "var(light_cyan)"
+        },
+        {
+            "scope": "executor.light_magenta.light_white",
+            "foreground": "var(light_magenta)",
+            "background": "var(light_white)"
+        },
+        {
+            "scope": "executor.light_magenta.default",
+            "foreground": "var(light_magenta)",
+            "background": "var(background)"
+        },
+        {
+            "scope": "executor.light_magenta.reverse_default",
+            "foreground": "var(light_magenta)",
+            "background": "var(foreground)"
+        },
+        {
+            "scope": "executor.light_cyan.black",
+            "foreground": "var(light_cyan)",
+            "background": "var(black)"
+        },
+        {
+            "scope": "executor.light_cyan.red",
+            "foreground": "var(light_cyan)",
+            "background": "var(red)"
+        },
+        {
+            "scope": "executor.light_cyan.green",
+            "foreground": "var(light_cyan)",
+            "background": "var(green)"
+        },
+        {
+            "scope": "executor.light_cyan.brown",
+            "foreground": "var(light_cyan)",
+            "background": "var(brown)"
+        },
+        {
+            "scope": "executor.light_cyan.blue",
+            "foreground": "var(light_cyan)",
+            "background": "var(blue)"
+        },
+        {
+            "scope": "executor.light_cyan.magenta",
+            "foreground": "var(light_cyan)",
+            "background": "var(magenta)"
+        },
+        {
+            "scope": "executor.light_cyan.cyan",
+            "foreground": "var(light_cyan)",
+            "background": "var(cyan)"
+        },
+        {
+            "scope": "executor.light_cyan.white",
+            "foreground": "var(light_cyan)",
+            "background": "var(white)"
+        },
+        {
+            "scope": "executor.light_cyan.light_black",
+            "foreground": "var(light_cyan)",
+            "background": "var(light_black)"
+        },
+        {
+            "scope": "executor.light_cyan.light_red",
+            "foreground": "var(light_cyan)",
+            "background": "var(light_red)"
+        },
+        {
+            "scope": "executor.light_cyan.light_green",
+            "foreground": "var(light_cyan)",
+            "background": "var(light_green)"
+        },
+        {
+            "scope": "executor.light_cyan.light_brown",
+            "foreground": "var(light_cyan)",
+            "background": "var(light_brown)"
+        },
+        {
+            "scope": "executor.light_cyan.light_blue",
+            "foreground": "var(light_cyan)",
+            "background": "var(light_blue)"
+        },
+        {
+            "scope": "executor.light_cyan.light_magenta",
+            "foreground": "var(light_cyan)",
+            "background": "var(light_magenta)"
+        },
+        {
+            "scope": "executor.light_cyan.light_cyan",
+            "foreground": "var(light_cyan)",
+            "background": "var(light_cyan)"
+        },
+        {
+            "scope": "executor.light_cyan.light_white",
+            "foreground": "var(light_cyan)",
+            "background": "var(light_white)"
+        },
+        {
+            "scope": "executor.light_cyan.default",
+            "foreground": "var(light_cyan)",
+            "background": "var(background)"
+        },
+        {
+            "scope": "executor.light_cyan.reverse_default",
+            "foreground": "var(light_cyan)",
+            "background": "var(foreground)"
+        },
+        {
+            "scope": "executor.light_white.black",
+            "foreground": "var(light_white)",
+            "background": "var(black)"
+        },
+        {
+            "scope": "executor.light_white.red",
+            "foreground": "var(light_white)",
+            "background": "var(red)"
+        },
+        {
+            "scope": "executor.light_white.green",
+            "foreground": "var(light_white)",
+            "background": "var(green)"
+        },
+        {
+            "scope": "executor.light_white.brown",
+            "foreground": "var(light_white)",
+            "background": "var(brown)"
+        },
+        {
+            "scope": "executor.light_white.blue",
+            "foreground": "var(light_white)",
+            "background": "var(blue)"
+        },
+        {
+            "scope": "executor.light_white.magenta",
+            "foreground": "var(light_white)",
+            "background": "var(magenta)"
+        },
+        {
+            "scope": "executor.light_white.cyan",
+            "foreground": "var(light_white)",
+            "background": "var(cyan)"
+        },
+        {
+            "scope": "executor.light_white.white",
+            "foreground": "var(light_white)",
+            "background": "var(white)"
+        },
+        {
+            "scope": "executor.light_white.light_black",
+            "foreground": "var(light_white)",
+            "background": "var(light_black)"
+        },
+        {
+            "scope": "executor.light_white.light_red",
+            "foreground": "var(light_white)",
+            "background": "var(light_red)"
+        },
+        {
+            "scope": "executor.light_white.light_green",
+            "foreground": "var(light_white)",
+            "background": "var(light_green)"
+        },
+        {
+            "scope": "executor.light_white.light_brown",
+            "foreground": "var(light_white)",
+            "background": "var(light_brown)"
+        },
+        {
+            "scope": "executor.light_white.light_blue",
+            "foreground": "var(light_white)",
+            "background": "var(light_blue)"
+        },
+        {
+            "scope": "executor.light_white.light_magenta",
+            "foreground": "var(light_white)",
+            "background": "var(light_magenta)"
+        },
+        {
+            "scope": "executor.light_white.light_cyan",
+            "foreground": "var(light_white)",
+            "background": "var(light_cyan)"
+        },
+        {
+            "scope": "executor.light_white.light_white",
+            "foreground": "var(light_white)",
+            "background": "var(light_white)"
+        },
+        {
+            "scope": "executor.light_white.default",
+            "foreground": "var(light_white)",
+            "background": "var(background)"
+        },
+        {
+            "scope": "executor.light_white.reverse_default",
+            "foreground": "var(light_white)",
+            "background": "var(foreground)"
+        },
+        {
+            "scope": "executor.default.black",
+            "foreground": "var(foreground)",
+            "background": "var(black)"
+        },
+        {
+            "scope": "executor.default.red",
+            "foreground": "var(foreground)",
+            "background": "var(red)"
+        },
+        {
+            "scope": "executor.default.green",
+            "foreground": "var(foreground)",
+            "background": "var(green)"
+        },
+        {
+            "scope": "executor.default.brown",
+            "foreground": "var(foreground)",
+            "background": "var(brown)"
+        },
+        {
+            "scope": "executor.default.blue",
+            "foreground": "var(foreground)",
+            "background": "var(blue)"
+        },
+        {
+            "scope": "executor.default.magenta",
+            "foreground": "var(foreground)",
+            "background": "var(magenta)"
+        },
+        {
+            "scope": "executor.default.cyan",
+            "foreground": "var(foreground)",
+            "background": "var(cyan)"
+        },
+        {
+            "scope": "executor.default.white",
+            "foreground": "var(foreground)",
+            "background": "var(white)"
+        },
+        {
+            "scope": "executor.default.light_black",
+            "foreground": "var(foreground)",
+            "background": "var(light_black)"
+        },
+        {
+            "scope": "executor.default.light_red",
+            "foreground": "var(foreground)",
+            "background": "var(light_red)"
+        },
+        {
+            "scope": "executor.default.light_green",
+            "foreground": "var(foreground)",
+            "background": "var(light_green)"
+        },
+        {
+            "scope": "executor.default.light_brown",
+            "foreground": "var(foreground)",
+            "background": "var(light_brown)"
+        },
+        {
+            "scope": "executor.default.light_blue",
+            "foreground": "var(foreground)",
+            "background": "var(light_blue)"
+        },
+        {
+            "scope": "executor.default.light_magenta",
+            "foreground": "var(foreground)",
+            "background": "var(light_magenta)"
+        },
+        {
+            "scope": "executor.default.light_cyan",
+            "foreground": "var(foreground)",
+            "background": "var(light_cyan)"
+        },
+        {
+            "scope": "executor.default.light_white",
+            "foreground": "var(foreground)",
+            "background": "var(light_white)"
+        },
+        {
+            "scope": "executor.default.default",
+            "foreground": "var(foreground)",
+            "background": "var(background)"
+        },
+        {
+            "scope": "executor.default.reverse_default",
+            "foreground": "var(foreground)",
+            "background": "var(foreground)"
+        },
+        {
+            "scope": "executor.reverse_default.black",
+            "foreground": "var(background)",
+            "background": "var(black)"
+        },
+        {
+            "scope": "executor.reverse_default.red",
+            "foreground": "var(background)",
+            "background": "var(red)"
+        },
+        {
+            "scope": "executor.reverse_default.green",
+            "foreground": "var(background)",
+            "background": "var(green)"
+        },
+        {
+            "scope": "executor.reverse_default.brown",
+            "foreground": "var(background)",
+            "background": "var(brown)"
+        },
+        {
+            "scope": "executor.reverse_default.blue",
+            "foreground": "var(background)",
+            "background": "var(blue)"
+        },
+        {
+            "scope": "executor.reverse_default.magenta",
+            "foreground": "var(background)",
+            "background": "var(magenta)"
+        },
+        {
+            "scope": "executor.reverse_default.cyan",
+            "foreground": "var(background)",
+            "background": "var(cyan)"
+        },
+        {
+            "scope": "executor.reverse_default.white",
+            "foreground": "var(background)",
+            "background": "var(white)"
+        },
+        {
+            "scope": "executor.reverse_default.light_black",
+            "foreground": "var(background)",
+            "background": "var(light_black)"
+        },
+        {
+            "scope": "executor.reverse_default.light_red",
+            "foreground": "var(background)",
+            "background": "var(light_red)"
+        },
+        {
+            "scope": "executor.reverse_default.light_green",
+            "foreground": "var(background)",
+            "background": "var(light_green)"
+        },
+        {
+            "scope": "executor.reverse_default.light_brown",
+            "foreground": "var(background)",
+            "background": "var(light_brown)"
+        },
+        {
+            "scope": "executor.reverse_default.light_blue",
+            "foreground": "var(background)",
+            "background": "var(light_blue)"
+        },
+        {
+            "scope": "executor.reverse_default.light_magenta",
+            "foreground": "var(background)",
+            "background": "var(light_magenta)"
+        },
+        {
+            "scope": "executor.reverse_default.light_cyan",
+            "foreground": "var(background)",
+            "background": "var(light_cyan)"
+        },
+        {
+            "scope": "executor.reverse_default.light_white",
+            "foreground": "var(background)",
+            "background": "var(light_white)"
+        },
+        {
+            "scope": "executor.reverse_default.default",
+            "foreground": "var(background)",
+            "background": "var(background)"
+        },
+        {
+            "scope": "executor.reverse_default.reverse_default",
+            "foreground": "var(background)",
+            "background": "var(foreground)"
+        }
+    ]
+}

@@ -1,5 +1,6 @@
 ### WIP
 
+- Use color scheme to display all ANSI terminal colors for fg & bg
 - Added `executor_show_panel` command
 
 ### 1.5.2 - Nov 17, 2024
