@@ -526,7 +526,7 @@ class ExecutorImplCommand(sublime_plugin.WindowCommand, ProcessListener):
             self.write(str(e) + "\n")
             if not self.quiet:
                 self.write("[ EXCEPTION ]\n")
-            set_status(None, window.active_view())
+            set_status(None, self.window.active_view())
 
     def write(self, characters):
         if self.window.active_view().settings().get("executor_show_panel_on_output", False):
