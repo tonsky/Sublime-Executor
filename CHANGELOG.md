@@ -1,3 +1,7 @@
+### 1.6.1 - Oct 11, 2026
+
+- Clear status when process fails to start #9
+
 ### 1.6.0 - Apr 6, 2025
 
 - Use color scheme to display all ANSI terminal colors for fg & bg
